@@ -15,6 +15,13 @@
       "when": 1750577690045,
       "tag": "0001_harsh_captain_flint",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1750578705740,
+      "tag": "0002_sloppy_angel",
+      "breakpoints": true
     }
   ]
 }

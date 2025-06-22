@@ -1,3 +1,4 @@
+import { user } from "@/drizzle/schema";
 import {
     pgTableCreator,
     boolean,
@@ -70,8 +71,8 @@ export const skill = createTable('skill', {
     id: text("id")
         .primaryKey()
         .$defaultFn(() => crypto.randomUUID()),
-    technical: text('technical').notNull(),
-    softSkill: text('softSkill').notNull(),
+    technical: text('technical').array().notNull(),
+    softSkill: text('softSkill').array().notNull(),
     description: text('description').notNull(),
     createdAt: timestamp('createdAt').notNull(),
     updatedAt: timestamp('updatedAt').notNull(),
@@ -217,3 +218,12 @@ export const authenticators = createTable(
         },
     ]
 )
+
+export type EducationType = typeof education.$inferSelect;
+export type achivementType = typeof achivement.$inferSelect;
+export type SkillType = typeof skill.$inferSelect;
+export type AdditionType = typeof additional.$inferSelect;
+export type ExperienceType = typeof experience.$inferSelect;
+export type ProjectType = typeof project.$inferSelect;
+export type CertificateType = typeof certificate.$inferSelect;
+export type UserType = typeof user.$inferSelect;
