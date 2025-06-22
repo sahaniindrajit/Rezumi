@@ -26,15 +26,24 @@ import {
 import { Session } from "next-auth"
 import { userProfile } from "@/types/userProfile.type"
 
+import { useForm, SubmitHandler,FieldPath } from "react-hook-form"
+import { Checkbox } from "@radix-ui/react-checkbox"
+
 export function UserProfileSection({ session }: { session: Session }) {
     const completionPercentage = 75
     const [isModalOpen, setIsModalOpen] = useState(false)
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [userDetail, setUserDetails] = useState<Partial<userProfile>>({})
+    // const [userDetail, setUserDetails] = useState<Partial<userProfile>>({})
+        
+    // const handleSubmit = () => {
+        
+    // }
 
-    const handleSubmit = () => {
+    const { register, handleSubmit } = useForm<userProfile>()
 
+    const onSubmit: SubmitHandler<userProfile> = (data) => {
+        console.log(data)
     }
 
     return (
@@ -88,7 +97,8 @@ export function UserProfileSection({ session }: { session: Session }) {
                                         </Button>
                                     </DialogTrigger>
                                     <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                                        <form onSubmit={handleSubmit}>
+
+                                        <form onSubmit={handleSubmit(onSubmit)}>
                                             <DialogHeader>
                                                 <DialogTitle className="text-2xl font-bold">Update Your Profile</DialogTitle>
                                                 <DialogDescription>
@@ -98,12 +108,18 @@ export function UserProfileSection({ session }: { session: Session }) {
 
                                             <Tabs defaultValue="personal" className="w-full">
                                                 <TabsList className="grid w-full grid-cols-5">
-                                                    <TabsTrigger value="personal">Personal</TabsTrigger>
+                                                    <TabsTrigger value="personal">Personal</TabsTrigger>  
                                                     <TabsTrigger value="experience">Experience</TabsTrigger>
                                                     <TabsTrigger value="education">Education</TabsTrigger>
                                                     <TabsTrigger value="skills">Skills</TabsTrigger>
                                                     <TabsTrigger value="additional">Additional</TabsTrigger>
                                                 </TabsList>
+                                                <TabsList className="grid w-full grid-cols-5">
+                                                    <TabsTrigger value="project">Project</TabsTrigger>
+                                                    <TabsTrigger value="achievement">Achivement</TabsTrigger>
+                                                    <TabsTrigger value="certificate">Certificate</TabsTrigger>
+                                                </TabsList>
+                                                
 
                                                 <TabsContent value="personal" className="space-y-4 mt-6">
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -113,6 +129,7 @@ export function UserProfileSection({ session }: { session: Session }) {
                                                                 id="firstName"
                                                                 placeholder="Enter your first name"
                                                                 defaultValue={session.user?.name?.split(" ")[0] || ""}
+                                                                {...register("user.name", { required: true })} // Registering the input with react-hook-form
                                                             />
                                                         </div>
                                                         <div className="space-y-2">
@@ -132,20 +149,25 @@ export function UserProfileSection({ session }: { session: Session }) {
                                                                 defaultValue={session.user?.email || ""}
                                                                 disabled
                                                                 className="bg-gray-50"
+                                                                {...register("user.email", { required: true })} 
                                                             />
                                                             <p className="text-xs text-gray-500">Email cannot be changed</p>
                                                         </div>
                                                         <div className="space-y-2">
                                                             <Label htmlFor="phone">Phone</Label>
-                                                            <Input id="phone" placeholder="Enter your phone number" />
+                                                            <Input  id="phone" placeholder="Enter your phone number" 
+                                                                   
+                                                                {...register("user.phoneNumber")} // string or numeric
+
+                                                            />
                                                         </div>
                                                         <div className="space-y-2">
                                                             <Label htmlFor="location">Location</Label>
-                                                            <Input id="location" placeholder="City, State" />
+                                                            <Input id="location" placeholder="City, State"  {...register("user.location")} />
                                                         </div>
                                                         <div className="space-y-2">
                                                             <Label htmlFor="title">Professional Title</Label>
-                                                            <Input id="title" placeholder="e.g., Senior Frontend Developer" />
+                                                            <Input id="title" placeholder="e.g., Senior Frontend Developer"  {...register("user.currentPosition")} />
                                                         </div>
                                                     </div>
                                                     <div className="space-y-2">
@@ -154,6 +176,7 @@ export function UserProfileSection({ session }: { session: Session }) {
                                                             id="summary"
                                                             placeholder="Write a brief professional summary..."
                                                             className="min-h-[100px]"
+                                                            {...register("user.description")}
                                                         />
                                                     </div>
                                                 </TabsContent>
@@ -162,8 +185,10 @@ export function UserProfileSection({ session }: { session: Session }) {
                                                     <div className="space-y-6">
                                                         <div className="flex justify-between items-center">
                                                             <h3 className="text-lg font-semibold">Work Experience</h3>
+                                        
+                                                            
                                                             <Button variant="outline" size="sm">
-                                                                <Plus className="w-4 h-4 mr-2" />
+                                                                <Plus className="w-4 h-4 mr-2" />  
                                                                 Add Experience
                                                             </Button>
                                                         </div>
@@ -172,19 +197,19 @@ export function UserProfileSection({ session }: { session: Session }) {
                                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                                 <div className="space-y-2">
                                                                     <Label htmlFor="jobTitle">Job Title</Label>
-                                                                    <Input id="jobTitle" placeholder="e.g., Senior Frontend Developer" />
+                                                                    <Input id="jobTitle" placeholder="e.g., Senior Frontend Developer" {...register("experience.0.jobtitle")} />
                                                                 </div>
                                                                 <div className="space-y-2">
                                                                     <Label htmlFor="company">Company</Label>
-                                                                    <Input id="company" placeholder="Company name" />
+                                                                    <Input id="company" placeholder="Company name" {...register("experience.0.company")} />
                                                                 </div>
                                                                 <div className="space-y-2">
                                                                     <Label htmlFor="startDate">Start Date</Label>
-                                                                    <Input id="startDate" type="month" />
+                                                                    <Input id="startDate" type="month" {...register("experience.0.startingDate")} />
                                                                 </div>
                                                                 <div className="space-y-2">
                                                                     <Label htmlFor="endDate">End Date</Label>
-                                                                    <Input id="endDate" type="month" placeholder="Leave empty if current" />
+                                                                    <Input id="endDate" type="month" placeholder="Leave empty if current" {...register("experience.0.endingDate")} />
                                                                 </div>
                                                             </div>
                                                             <div className="space-y-2 mt-4">
@@ -193,6 +218,7 @@ export function UserProfileSection({ session }: { session: Session }) {
                                                                     id="description"
                                                                     placeholder="Describe your responsibilities and achievements..."
                                                                     className="min-h-[100px]"
+                                                                    {...register("experience.0.description")}
                                                                 />
                                                             </div>
                                                         </Card>
@@ -213,23 +239,37 @@ export function UserProfileSection({ session }: { session: Session }) {
                                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                                 <div className="space-y-2">
                                                                     <Label htmlFor="degree">Degree</Label>
-                                                                    <Input id="degree" placeholder="e.g., Bachelor of Science" />
+                                                                    <Input id="degree" placeholder="e.g., Bachelor of Science" {...register("education.0.degree")} />
                                                                 </div>
                                                                 <div className="space-y-2">
                                                                     <Label htmlFor="field">Field of Study</Label>
-                                                                    <Input id="field" placeholder="e.g., Computer Science" />
+                                                                    <Input id="field" placeholder="e.g., Computer Science" {...register("education.0.field")} />
                                                                 </div>
                                                                 <div className="space-y-2">
                                                                     <Label htmlFor="school">School/University</Label>
-                                                                    <Input id="school" placeholder="Institution name" />
+                                                                    <Input id="school" placeholder="Institution name" {...register("education.0.university")} />
                                                                 </div>
                                                                 <div className="space-y-2">
-                                                                    <Label htmlFor="gradYear">Graduation Year</Label>
-                                                                    <Input id="gradYear" type="number" placeholder="2020" />
+                                                                    <Label htmlFor="startYear">Start Date</Label>
+                                                                    <Input
+                                                                        id="startYear"
+                                                                        type="date"
+                                                                        placeholder="2018-01-01"
+                                                                        {...register("education.0.startingDate")}
+                                                                    />
+                                                                </div>
+                                                                <div className="space-y-2">
+                                                                    <Label htmlFor="gradYear">Graduation Date</Label>
+                                                                    <Input
+                                                                        id="gradYear"
+                                                                        type="date"
+                                                                        placeholder="2022-06-01"
+                                                                        {...register("education.0.endingDate")}
+                                                                    />
                                                                 </div>
                                                                 <div className="space-y-2">
                                                                     <Label htmlFor="gpa">GPA (Optional)</Label>
-                                                                    <Input id="gpa" placeholder="3.8" />
+                                                                    <Input id="gpa" placeholder="3.8" {...register("education.0.gpa")} />
                                                                 </div>
                                                             </div>
                                                         </Card>
@@ -244,6 +284,7 @@ export function UserProfileSection({ session }: { session: Session }) {
                                                                 id="technicalSkills"
                                                                 placeholder="List your technical skills separated by commas (e.g., React, TypeScript, Node.js, Python)"
                                                                 className="min-h-[80px]"
+                                                                {...register("skill.technical")}
                                                             />
                                                         </div>
                                                         <div className="space-y-2">
@@ -252,47 +293,196 @@ export function UserProfileSection({ session }: { session: Session }) {
                                                                 id="softSkills"
                                                                 placeholder="List your soft skills separated by commas (e.g., Leadership, Communication, Problem Solving)"
                                                                 className="min-h-[80px]"
+                                                                {...register("skill.softSkill")}
                                                             />
                                                         </div>
-                                                        <div className="space-y-2">
-                                                            <Label htmlFor="languages">Languages</Label>
-                                                            <Textarea
-                                                                id="languages"
-                                                                placeholder="List languages and proficiency levels (e.g., English - Native, Spanish - Conversational)"
-                                                                className="min-h-[80px]"
-                                                            />
-                                                        </div>
+                                                       
                                                     </div>
                                                 </TabsContent>
 
-                                                <TabsContent value="additional" className="space-y-4 mt-6">
-                                                    <div className="space-y-6">
-                                                        <div className="space-y-2">
-                                                            <Label htmlFor="certifications">Certifications</Label>
-                                                            <Textarea
-                                                                id="certifications"
-                                                                placeholder="List your certifications (e.g., AWS Certified Developer, Google Cloud Professional)"
-                                                                className="min-h-[80px]"
-                                                            />
-                                                        </div>
-                                                        <div className="space-y-2">
-                                                            <Label htmlFor="projects">Notable Projects</Label>
-                                                            <Textarea
-                                                                id="projects"
-                                                                placeholder="Describe your key projects and achievements"
-                                                                className="min-h-[100px]"
-                                                            />
-                                                        </div>
-                                                        <div className="space-y-2">
-                                                            <Label htmlFor="awards">Awards & Achievements</Label>
-                                                            <Textarea
-                                                                id="awards"
-                                                                placeholder="List any awards, recognitions, or notable achievements"
-                                                                className="min-h-[80px]"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </TabsContent>
+                                                  <TabsContent value="project" className="space-y-4 mt-6">
+    <Card className="p-4">
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="project-name">Project Name</Label>
+            <Input
+              id="project-name"
+              placeholder="Project name"
+              {...register("project.0.name")}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="project-link">Project Link</Label>
+            <Input
+              id="project-link"
+              placeholder="https://example.com"
+              {...register("project.0.link")}
+            />
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <Label htmlFor="project-description">Description</Label>
+            <Textarea
+              id="project-description"
+              placeholder="Project description"
+              {...register("project.0.description")}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="project-skills">Skills (comma separated)</Label>
+            <Input
+              id="project-skills"
+              placeholder="React, Node.js, TypeScript"
+              {...register("project.0.skills")}
+            />
+          </div>
+          <div className="space-y-2 flex items-end">
+            <div className="flex items-center gap-2">
+
+              <Checkbox
+                id="project-current" 
+                {...register("project.0.isCurrent")}
+              />
+
+              <Label htmlFor="project-current">Currently working</Label>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="project-start">Start Date</Label>
+            <Input
+              type="date"
+              id="project-start"
+              {...register("project.0.startingDate")}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="project-end">End Date</Label>
+            <Input
+              type="date"
+              id="project-end"
+             
+              {...register("project.0.endingDate")}
+            />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  </TabsContent>
+
+  {/* Certificates Tab (Single Entry) */}
+  <TabsContent value="certificate" className="space-y-4 mt-6">
+    <Card className="p-4">
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="certificate-name">Certificate Name</Label>
+            <Input
+              id="certificate-name"
+              placeholder="Certificate name"
+              {...register("certificate.0.name")}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="certificate-link">Certificate Link</Label>
+            <Input
+              id="certificate-link"
+              placeholder="https://example.com"
+              {...register("certificate.0.link")}
+            />
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <Label htmlFor="certificate-description">Description</Label>
+            <Textarea
+              id="certificate-description"
+              placeholder="Certificate description"
+              {...register("certificate.0.description")}
+            />
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <Label htmlFor="certificate-skills">Skills (comma separated)</Label>
+            <Input
+              id="certificate-skills"
+              placeholder="AWS, Cloud Computing"
+              {...register("certificate.0.skills")}
+            />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  </TabsContent>
+
+  {/* Achievements Tab (Single Entry) */}
+  <TabsContent value="achievement" className="space-y-4 mt-6">
+    <Card className="p-4">
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="achievement-title">Title</Label>
+            <Input
+              id="achievement-title"
+              placeholder="Achievement title"
+              {...register("achievement.0.title")}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="achievement-link">Related Link</Label>
+            <Input
+              id="achievement-link"
+              placeholder="https://example.com"
+              {...register("achievement.0.link")}
+            />
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <Label htmlFor="achievement-description">Description</Label>
+            <Textarea
+              id="achievement-description"
+              placeholder="Details about your achievement"
+              className="min-h-[100px]"
+              {...register("achievement.0.description")}
+            />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  </TabsContent>
+
+  {/* Additional Info Tab (Single Entry) */}
+  <TabsContent value="additional" className="space-y-4 mt-6">
+    <Card className="p-4">
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="additional-title">Title</Label>
+            <Input
+              id="additional-title"
+              placeholder="Item title"
+              {...register("additional.0.title")}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="additional-link">Related Link</Label>
+            <Input
+              id="additional-link"
+              placeholder="https://example.com"
+              {...register("additional.0.link")}
+            />
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <Label htmlFor="additional-description">Description</Label>
+            <Textarea
+              id="additional-description"
+              placeholder="Detailed information"
+              className="min-h-[100px]"
+              {...register("additional.0.description")}
+            />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  </TabsContent>
+
+
+                                                
                                             </Tabs>
 
                                             <div className="flex justify-end gap-4 mt-6 pt-6 border-t">

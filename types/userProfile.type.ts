@@ -1,13 +1,13 @@
-import { CertificateType, EducationType, SkillType, ProjectType, AdditionType, achivementType, UserType, } from "@/server/db/schema"
+import { CertificateType, EducationType, SkillType, ProjectType, AdditionType, achivementType, UserType, ExperienceType, } from "@/server/db/schema"
 
 export type userProfile = {
     education: EducationType[],
     skill: SkillType,
-    experience: EducationType[],
+    experience: ExperienceType[],
     certificate: CertificateType[],
     project: ProjectType[],
     additional: AdditionType[],
-    achivement: achivementType[]
+    achievement: achivementType[]
     user: UserType
 
 }

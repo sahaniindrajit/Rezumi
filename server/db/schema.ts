@@ -226,4 +226,4 @@ export type AdditionType = typeof additional.$inferSelect;
 export type ExperienceType = typeof experience.$inferSelect;
 export type ProjectType = typeof project.$inferSelect;
 export type CertificateType = typeof certificate.$inferSelect;
-export type UserType = typeof user.$inferSelect;
+export type UserType = typeof users.$inferSelect; // initially user was pointing to drizzle/schema.ts, but now it points to the new users table
