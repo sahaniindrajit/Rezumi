@@ -1,4 +1,3 @@
-import { user } from "@/drizzle/schema";
 import {
     pgTableCreator,
     boolean,
