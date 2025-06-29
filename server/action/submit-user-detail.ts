@@ -1,7 +1,7 @@
 'use server'
 import { userProfile } from "@/types/userProfile.type";
 import { db } from "../db";
-import { achivement, additional, certificate, education, experience, project, skill, users, userDetails as userDetailsTable } from "../db/schema";
+import { achivement, additional, certificate, education, experience, project, users } from "../db/schema";
 import { eq } from "drizzle-orm";
 
 export async function submitUserDetails({ userDetails, userId }: { userDetails: userProfile, userId: string }) {
