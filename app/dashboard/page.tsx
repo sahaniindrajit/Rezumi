@@ -74,10 +74,10 @@ function Dashboard() {
         </div>
 
         {/* Resume History Section */}
-        <ResemueHistory />
+        {/* <ResemueHistory /> */}
 
         {/* Quick Stats */}
-        <QuickStart />
+        {/* <QuickStart /> */}
       </div>
     </div>
   )

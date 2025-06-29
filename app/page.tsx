@@ -1,11 +1,13 @@
-
+"use client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { FileText, Zap, Target, Download, User, Settings, Menu, Plus, Eye } from "lucide-react"
+import { FileText, Zap, Target, Download, User, Settings, Menu, Plus, Eye, Loader2 } from "lucide-react"
 import Image from "next/image"
-import Link from "next/link"
-import { signInWithGoogle } from '@/server/action/signIn';
+
+import { useSession } from "next-auth/react"
+
+import { redirect } from 'next/navigation'
 
 export default function RezumiLanding() {
   // Mock user authentication state - in real app, this would come from auth context
@@ -32,7 +34,26 @@ export default function RezumiLanding() {
       createdAt: "2024-01-10",
       status: "Pending",
     },
-  ]
+  ];
+
+  const { data: session, status } = useSession();
+
+  if(status === "loading") {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto text-emerald-600" />
+          <p className="text-gray-600">Loading your dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+  else if(status === "authenticated") {
+    // User is authenticated, you can access session data
+    console.log("User session:", session);
+    redirect('/dashboard'); // Redirect to user dashboard 
+  }
+
 
   return (
     <div className="min-h-screen bg-white">
