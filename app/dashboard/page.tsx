@@ -12,6 +12,11 @@ import Link from "next/link"
 import { UserProfileSection } from "@/components/dashboard/user-profile"
 import { QuickStart } from "@/components/dashboard/quick-start"
 import ResemueHistory from "@/components/dashboard/resume-history"
+import { redirect } from "next/navigation"
+
+const handleOnClick = () => {
+  redirect('/ResumeTemplate');
+}
 
 function Dashboard() {
   const { data: session, status } = useSession()
@@ -67,7 +72,7 @@ function Dashboard() {
               Create New Resume
             </Button>
           </Link>
-          <Button size="lg" variant="outline" className="sm:w-auto">
+          <Button onClick={handleOnClick} size="lg" variant="outline" className="sm:w-auto">
             <FileText className="w-5 h-5 mr-2" />
             View Templates
           </Button>

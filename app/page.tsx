@@ -8,6 +8,9 @@ import Image from "next/image"
 import { useSession } from "next-auth/react"
 
 import { redirect } from 'next/navigation'
+const handleOnclick = () => {
+  redirect('/ResumeTemplate');
+}
 
 export default function RezumiLanding() {
   // Mock user authentication state - in real app, this would come from auth context
@@ -88,7 +91,7 @@ export default function RezumiLanding() {
                   Create Your Resume
                   <FileText className="ml-2 w-4 h-4" />
                 </Button>
-                <Button size="lg" variant="outline">
+                <Button onClick={handleOnclick} size="lg" variant="outline">
                   View Templates
                 </Button>
               </div>
