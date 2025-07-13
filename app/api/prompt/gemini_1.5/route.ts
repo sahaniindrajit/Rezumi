@@ -6,7 +6,7 @@ export const POST = async (res: Response) => {
 
     try {
         const answer = await answeringModel();
-
+        
 
         return new Response(JSON.stringify({ answer }), {
             status: 200,

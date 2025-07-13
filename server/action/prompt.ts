@@ -10,12 +10,12 @@ const GEMINI_API_KEY = process.env.GOOGLE_GEMINI;
 export default async function answeringModel() {
 
     try {
-        console.log("key", GEMINI_API_KEY)
+        console.log("key-->", GEMINI_API_KEY)
 
         //eslint-disable-next-line @typescript-eslint/no-unused-vars
         const userDataPrompt = buildPrompt(userDetails)
 
-
+        console.log("Prompt--->",userDataPrompt);
         const response = await fetch(
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_API_KEY,
             {
@@ -40,9 +40,22 @@ export default async function answeringModel() {
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const result: any = await response.json();
-        console.log(result);
 
-        return { success: true, answer: result }
+        const tailoredResumeText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+        console.log("Tailored Resume--->", tailoredResumeText);
+
+        // Clean and parse the JSON
+        if (tailoredResumeText) {
+            // Remove JSON code block markers
+            const cleanJson = tailoredResumeText
+                .replace(/^```json\s*/, '')
+                .replace(/\s*```$/, '');
+            
+            const parsedResume = JSON.parse(cleanJson);
+            return { success: true, answer: parsedResume };
+        }
+
+        return { success: false, answer: null };
     } catch (err) {
         console.log(err)
         return { success: false, answer: null }

@@ -12,7 +12,7 @@ export function buildPrompt(user: any) {
   }).join("\n");
 
   const proj = user.projects
-    .map((p: { title: any; description: any; }) => `- ${p.title}: ${p.description}`)
+    .map((p: { title: any; description: any; link:any }) => `- ${p.title}: ${p.description}: ${p.link}`)
     .join("\n");
 
   const edu = user.education
@@ -52,7 +52,8 @@ The resume must:
   "projects": [
     {
       "title": "",
-      "description": ""
+      "description": "",
+      "Link":""
     }
   ],
   "education": [

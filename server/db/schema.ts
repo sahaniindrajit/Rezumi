@@ -17,6 +17,7 @@ export const userDetails = createTable('userDetails', {
     id: text("id")
         .primaryKey()
         .$defaultFn(() => crypto.randomUUID()),
+    userID:text("userID").references(()=> users.id ),
     experince: text('experience')
         .array(),
     education: text('education')
