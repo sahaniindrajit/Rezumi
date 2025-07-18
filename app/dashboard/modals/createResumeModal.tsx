@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface CreateResumeModalProps {
   open: boolean;
@@ -34,7 +35,7 @@ export function CreateResumeModal({ open, onOpenChange }: CreateResumeModalProps
   });
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter()
-
+  const { data: session, status } = useSession();
 
   const handleInputChange = (field: keyof ResumeFormData, value: string) => {
     setFormData(prev => ({
@@ -54,8 +55,10 @@ export function CreateResumeModal({ open, onOpenChange }: CreateResumeModalProps
 
   const handleCreateResume = async () => {
     setIsLoading(true);
+    
 
     try {
+      console.log("USER ID-->", session?.user?.id);
       const res = await fetch("/api/prompt/gemini_1.5", {
       method: "POST",
       headers: {
@@ -67,6 +70,7 @@ export function CreateResumeModal({ open, onOpenChange }: CreateResumeModalProps
           jobDescription: formData.jobDescription,
           jobLink: formData.jobLink,
         },
+        userId: session!.user!.id, // Assuming you store user ID in sessionStorage
       }),
     });
 

@@ -3,10 +3,10 @@ import answeringModel from "@/server/action/prompt";
 export async function POST(req: Request) {
   try {
     // read the JSON body
-    const { jobDetails } = await req.json();
+    const { jobDetails , userId } = await req.json();
 
     // jobDetails now has your { companyName, jobDescription, jobLink }
-    const answer = await answeringModel(jobDetails);
+    const answer = await answeringModel(jobDetails,userId);
 
     return new Response(
       JSON.stringify({ success: true, data: answer }),

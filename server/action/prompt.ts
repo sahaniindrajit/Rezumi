@@ -1,13 +1,14 @@
 "use server"
 import fetch from "node-fetch";
 import { buildPrompt } from "./build-propt";
-import { userDetails } from "@/lib/user-data";
+import { fetchData } from "./fetchdata";
+// import { userDetails } from "@/lib/user-data";
 
 const GEMINI_API_KEY = process.env.GOOGLE_GEMINI;
 
 
 
-export default async function answeringModel(jobDetails:any) {
+export default async function answeringModel(jobDetails:any,userId:string) {
 
     try {
         console.log("key-->", GEMINI_API_KEY)
@@ -17,6 +18,9 @@ export default async function answeringModel(jobDetails:any) {
         // get user details from DB using api
 
         // get job description from frontend
+        console.log("userID-->",userId)
+        const userDetails=await fetchData(userId );
+        console.log("USer Details -->",userDetails)
         const userDataPrompt = buildPrompt(userDetails,jobDetails)
 
         console.log("Prompt--->",userDataPrompt);

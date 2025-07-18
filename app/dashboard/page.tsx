@@ -14,16 +14,38 @@ import { QuickStart } from "@/components/dashboard/quick-start"
 import ResemueHistory from "@/components/dashboard/resume-history"
 import { redirect } from "next/navigation"
 import { CreateResumeModal } from "./modals/createResumeModal"
-import { useState } from "react"
+import { use, useEffect, useState } from "react"
+import { fetchData } from "@/server/action/fetchdata"
 
 const handleOnClick = () => {
   redirect('/ResumeTemplate');
+}
+async function tempFetch(userId: string) {
+  const result = await fetchData(userId);
+  return result;
+
 }
 
 function Dashboard() {
   const { data: session, status } = useSession()
   const [open, onOpenChange] = useState(false);
-  
+  useEffect(() => {
+    // only run once you have an ID
+    if (!session?.user?.id) return;
+
+    // define your async fetcher
+    const load = async () => {
+      try {
+        const data = await tempFetch(session!.user!.id || "");
+        console.log("Fetched Data →", data);
+      
+      } catch (err) {
+        console.error("Error fetching dashboard data:", err);
+      }
+    };
+
+    load();              // call it
+  }, [session]);
   // Loading state
   if (status === "loading") {
     return (

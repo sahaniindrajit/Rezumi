@@ -148,15 +148,17 @@ export default function updateDetails() {
     console.log("Transformed data:", transformedData)
 
     try {
+      console.log("session user id -->", session.user!.id!)
       const submitDetails = await submituserDetailsData({
         userDetailsData: transformedData,
         userId: session.user!.id!
       })
-
+      
       if (!submitDetails.succes) {
         console.error("Error in submitting user details")
       } else {
         // Redirect back to profile or show success message
+        console.log("Submission Successfully --->", submitDetails);
         router.push('/dashboard')
       }
     } catch (error) {
