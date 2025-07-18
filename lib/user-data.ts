@@ -1,96 +1,124 @@
 export const userDetails = {
-  name: "John Doe",
-  email: "john.doe@gmail.com",
-  phone: "+1 123-456-7890",
-  location: "San Francisco, CA",
-  summary: "Results-driven Full Stack Developer with 4+ years of experience designing and delivering high‑impact web applications. Expertise in React, TypeScript, and scalable system design. Proven track record leading cross‑functional teams, architecting RESTful services, and driving performance optimizations to improve user satisfaction and business metrics. Seeking a Senior Frontend Developer role at Meta to leverage my technical and leadership skills on cutting‑edge products.",
+  name: "Alexandra Chen",
+  email: "alex.chen@proton.me",
+  phone: "+1 (415) 555-0198",
+  location: "San Francisco Bay Area, CA",
+  summary: "Senior Full Stack Developer with 5+ years of experience building scalable web applications at tech startups and FAANG companies. Specialized in React ecosystem and performance optimization. Led development of AI-powered features used by 1M+ users. Seeking Senior Frontend Developer role at Meta to solve complex UI challenges at scale.",
   experience: [
     {
-      company: "Aapkabazar",
-      role: "Senior Full Stack Developer",
-      duration: "May 2025 – July 2025",
+      company: "Google",
+      role: "Senior Frontend Engineer",
+      duration: "Jan 2023 – Present",
       description: [
-        "Architected and implemented an AI‑driven content automation pipeline using DeepSeek AI, boosting product description throughput by 4× and saving 60 hours of manual effort per month.",
-        "Designed a microservices‑based REST API with Redis caching and horizontal autoscaling—reduced endpoint redundancy by 35% and cut median response times from 450 ms to 220 ms under peak load.",
-        "Led a 4‑member team to build a role‑based Manager Approval System with React, TypeScript, and MongoDB aggregation pipelines, reducing approval processing time by 40% and improving operational transparency.",
-        "Developed an interactive analytics dashboard (Recharts + D3) to surface daily KPIs—enabled data‑driven decisions that increased on‑time order fulfillment by 15%."
+        "Led performance optimization of Google Drive web interface using React.memo and virtualization techniques, reducing initial load time by 42% for 2B+ users",
+        "Architected real-time collaboration features using WebSockets and CRDTs, enabling simultaneous editing for 50+ users",
+        "Mentored 8 junior engineers through code reviews and technical design sessions, improving team velocity by 30%",
+        "Implemented accessibility enhancements meeting WCAG 2.1 AA standards, expanding user base by 15%"
       ]
     },
     {
-      company: "Coding Ninjas",
-      role: "Teaching Assistant, Data Structures & Algorithms",
-      duration: "Feb 2024 – May 2024",
+      company: "Airbnb",
+      role: "Full Stack Developer",
+      duration: "Jun 2020 – Dec 2022",
       description: [
-        "Guided 150+ students through complex Java-based DSA modules, delivering hands‑on coding workshops and one‑on‑one mentorship.",
-        "Refactored and extended course materials, introducing live coding demos and real‑world problem sets that boosted student engagement and comprehension.",
-        "Collaborated with instructors to implement formative assessments—contributed to a 20% increase in overall course completion and a 30% improvement in average student coding proficiency."
+        "Developed next-gen search experience with React, GraphQL and ElasticSearch, improving conversion rate by 18%",
+        "Created component library used by 50+ product teams, reducing UI development time by 60%",
+        "Optimized CI/CD pipeline using GitHub Actions, cutting deployment time from 25 to 7 minutes",
+        "Built A/B testing framework supporting 150+ simultaneous experiments"
+      ]
+    },
+    {
+      company: "Lyft",
+      role: "Frontend Engineer",
+      duration: "Aug 2018 – May 2020",
+      description: [
+        "Redesigned rider app UI with React Native, improving App Store rating from 4.2 to 4.8",
+        "Implemented real-time location tracking using WebSocket and Mapbox GL",
+        "Reduced bundle size by 35% through code splitting and lazy loading"
       ]
     }
   ],
   projects: [
     {
-      title: "Manager Approval System",
+      title: "AI-Powered Design System",
       description: [
-        "Modular React + TypeScript SPA with role‑based access control, featuring real‑time order approval status updates.",
-        "Backend built in Node.js/Express with MongoDB aggregation pipelines and WebSocket notifications to managers.",
-        "Automated email/SMS alerts to stakeholders upon approval changes, reducing manual follow‑ups by 50%.",
-        "Integrated comprehensive Cypress end‑to‑end tests ensuring 95% coverage across approval workflows."
+        "Created Figma plugin generating React components from designs using computer vision",
+        "Integrated GPT-4 for documentation auto-generation with 92% accuracy",
+        "Adopted by 120+ teams at Google saving 15K+ engineering hours monthly"
       ],
-      link: "https://manager-approval-demo.johndoe.com",
-      
+      link: "https://github.com/alexchen/design-to-code",
+      technologies: "React, TensorFlow.js, Figma API"
     },
     {
-      title: "Statistical Dashboard",
+      title: "Accessibility Scanner",
       description: [
-        "End‑to‑end data pipeline: Node.js ingestion service → MongoDB time‑series collections → Express API.",
-        "Custom React dashboard using Chart.js and Recharts, with drill‑down filtering, export to CSV/PDF, and real‑time WebSocket updates.",
-        "Implemented role‑based chart access and anomaly detection alerts via server‑side triggers, improving KPI monitoring by 30%.",
-        "Styled with Tailwind CSS and accessible ARIA attributes to meet WCAG 2.1 AA standards."
+        "Open-source browser extension identifying WCAG violations with 98% precision",
+        "Used by 25K+ developers with 4.8/5 Chrome Store rating",
+        "Featured in Google I/O 2023 accessibility keynote"
       ],
-      link: "https://stats-dashboard.johndoe.com",
-     
+      link: "https://a11yscan.dev",
+      technologies: "TypeScript, Puppeteer, Axe-core"
     },
     {
-      title: "AI Content Automation Pipeline",
+      title: "Performance Monitoring Dashboard",
       description: [
-        "Node.js microservice orchestrating DeepSeek AI calls to auto‑generate product descriptions, FAQs, and benefit summaries.",
-        "Containerized with Docker and deployed on Kubernetes (EKS) with HPA and circuit breakers for resilience at scale.",
-        "Achieved 99.9% uptime handling 10,000+ requests/day; integrated Prometheus metrics and Grafana dashboards for monitoring.",
-        "Added custom admin UI to review/generate batches, with live preview and rollback capabilities."
+        "Real-time visualization of Core Web Vitals across 200+ production sites",
+        "Alert system identifying regression patterns using ML anomaly detection",
+        "Helped teams improve LCP scores by 55% on average"
       ],
-      link: "https://ai-content-pipeline.johndoe.com",
-      
+      link: "https://perf-insights.io",
+      technologies: "Next.js, WebSocket, Python Flask"
     }
   ],
   skills: [
-    "JavaScript (ES6+)",
-    "React & Redux",
+    "JavaScript (ES2022)",
     "TypeScript",
-    "Node.js & Express",
-    "MongoDB & Redis",
-    "RESTful & GraphQL APIs",
-    "AWS (EC2, S3, Lambda)",
-    "Docker & Kubernetes",
-    "System Design & Microservices",
-    "Agile & Scrum Leadership",
-    "Component Library Development",
-    "Unit & Integration Testing (Jest, Mocha)"
+    "React",
+    "Next.js",
+    "Redux",
+    "GraphQL",
+    "Node.js",
+    "Webpack",
+    "Jest",
+    "Cypress",
+    "Web Vitals",
+    "WebAssembly",
+    "WebGL",
+    "AWS",
+    "Docker",
+    "CI/CD"
   ],
   achievements: [
-    "Designed and open‑sourced a React component library used by 500+ developers on GitHub.",
-    "Awarded ‘Top Contributor’ at Coding Ninjas for highest student satisfaction scores in Q1 2024.",
-    "Solved 300+ DSA and competitive programming problems, ranking in the top 5% globally on LeetCode."
+    "Google Founders Award 2023 for AI Design System innovation",
+    "Speaker at React Summit SF 2023 (5K+ attendees)",
+    "Authored 'Advanced React Patterns' ebook (15K+ downloads)",
+    "Top 0.5% contributor on Stack Overflow (38K reputation)"
   ],
   education: [
     {
-      institution: "Maharaja Surajmal Institute of Technology",
-      degree: "B.Tech in Computer Science & Engineering",
-      year: "2023 – 2027",
-      highlights: [
-        "CGPA: 9.2/10.0",
-        "Relevant coursework: Advanced Algorithms, Distributed Systems, Cloud Computing"
-      ]
+      institution: "Stanford University",
+      degree: "M.S. Computer Science",
+      year: "2016 – 2018",
+      gpa: "3.9/4.0"
+    },
+    {
+      institution: "UC Berkeley",
+      degree: "B.S. Electrical Engineering & Computer Science",
+      year: "2012 – 2016",
+      gpa: "3.8/4.0"
     }
   ],
-  targetJobDescription: "Senior Frontend Developer at Meta: build and optimize high‑scale React/TypeScript applications, lead component library design, collaborate with product and backend teams on system architecture, mentor junior engineers, and drive best practices in performance and UX."
+  certifications: [
+    {
+      name: "AWS Certified Solutions Architect",
+      issuer: "Amazon Web Services",
+      date: "2023"
+    },
+    {
+      name: "Google Cloud Professional Developer",
+      issuer: "Google Cloud",
+      date: "2022"
+    }
+  ],
+  targetJobDescription: "Senior Frontend Developer at Meta: Build next-generation interfaces for Meta's family of apps using React, GraphQL and Relay. Lead technical design of complex features, optimize performance for billions of users, and mentor junior engineers in frontend best practices. Requires expertise in React ecosystem, performance optimization, and cross-functional collaboration."
 };

@@ -42,7 +42,7 @@ export default function updateDetails() {
   const { data: session, status } = useSession();
     if (!session) {
     // Optionally redirect or show a sign-in prompt
-    redirect('/page')
+      redirect('/')
     }
   const router = useRouter()
   const [currentSection, setCurrentSection] = useState<SectionId>('personal')

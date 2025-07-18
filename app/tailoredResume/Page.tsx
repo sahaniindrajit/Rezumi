@@ -1,4 +1,6 @@
+"use client";
 import { Mail, Phone, MapPin, Globe, Github, Linkedin } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface ContactInfo {
   email: string;
@@ -12,12 +14,14 @@ interface Experience {
   company: string;
   role: string;
   duration: string;
-  description: string;
+  description: string | string[]; // Allow both string and array
 }
 
 interface Project {
   title: string;
-  description: string;
+  date?: string;
+  description: string | string[]; // Allow both string and array
+  technologies?: string;
   Link: string;
 }
 
@@ -25,24 +29,63 @@ interface Education {
   institution: string;
   degree: string;
   year: string;
+  gpa?: string;
+}
+
+interface SkillCategory {
+  category: string;
+  items: string[];
 }
 
 interface ResumeData {
   name: string;
   contact: ContactInfo;
   summary: string;
-  skills: string[];
+  skills: SkillCategory[]; // Updated to categorized skills
   experience: Experience[];
   projects: Project[];
   education: Education[];
   achievements: string[];
+  certifications?: { // Added certifications
+    name: string;
+    issuer: string;
+    date: string;
+  }[];
 }
 
-interface ResumeTemplateProps {
-  resumeData: ResumeData;
-}
+const TailoredResume = () => {
+  const [resumeData, setResumeData] = useState<ResumeData | null>(null);
 
-const ResumeTemplate = ({ resumeData }: ResumeTemplateProps) => {
+  useEffect(() => {
+    const data = sessionStorage.getItem('resumeData');
+    if (data) {
+      try {
+        setResumeData(JSON.parse(data));
+      } catch (error) {
+        console.error("Error parsing resume data:", error);
+      }
+    }
+  }, []);
+
+  if (!resumeData) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p>Loading resume data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const rawSkills = (resumeData as any).skills;
+const skillsArray: SkillCategory[] = Array.isArray(rawSkills)
+  ? rawSkills
+  : Object.entries(rawSkills).map(([category, items]) => ({
+      category,
+      items: Array.isArray(items) ? items : [],
+    }));
+
   const {
     name,
     contact,
@@ -51,11 +94,22 @@ const ResumeTemplate = ({ resumeData }: ResumeTemplateProps) => {
     experience,
     projects,
     education,
-    achievements
+    achievements,
+    certifications
   } = resumeData;
+
+  console.log("skills--->",skills);
 
   // Extract role from first experience entry
   const currentRole = experience.length > 0 ? experience[0].role : "Software Developer";
+
+  // Helper to render description (handles both string and array)
+  const renderDescription = (desc: string | string[]) => {
+    if (Array.isArray(desc)) {
+      return desc.map((line, i) => <li key={i}>{line}</li>);
+    }
+    return desc.split('\n').map((line, i) => <li key={i}>{line}</li>);
+  };
 
   return (
     <div className="max-w-4xl mx-auto bg-white shadow-lg print:shadow-none print:max-w-none">
@@ -131,101 +185,144 @@ const ResumeTemplate = ({ resumeData }: ResumeTemplateProps) => {
 
       <div className="p-8 print:p-6 space-y-8">
         {/* Skills */}
-        <section>
-          <h2 className="text-xl font-bold text-resume-header mb-4 border-b-2 border-resume-accent pb-2">
-            SKILLS
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {skills.map((skill, index) => (
-              <div key={index} className="flex items-center">
-                <span className="text-resume-text">{skill}</span>
-              </div>
-            ))}
-          </div>
-        </section>
+        
+        {skillsArray.length > 0 && (
+          <section>
+            <h2 className="text-xl font-bold text-resume-header mb-4 border-b-2 border-resume-accent pb-2">
+              SKILLS
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {skillsArray.map((skillGroup, index) => (
+                <div key={index}>
+                  <h3 className="font-semibold text-resume-section mb-2">
+                    {skillGroup.category}
+                  </h3>
+                  <p className="text-resume-text">
+                    {skillGroup.items.join(', ')}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Experience */}
-        <section>
-          <h2 className="text-xl font-bold text-resume-header mb-4 border-b-2 border-resume-accent pb-2">
-            EXPERIENCE
-          </h2>
-          <div className="space-y-6">
-            {experience.map((exp, index) => (
-              <div key={index}>
-                <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2 mb-3">
-                  <div>
-                    <h3 className="text-lg font-semibold text-resume-text">{exp.role}</h3>
-                    <p className="text-resume-section font-medium">{exp.company}</p>
+        {experience.length > 0 && (
+          <section>
+            <h2 className="text-xl font-bold text-resume-header mb-4 border-b-2 border-resume-accent pb-2">
+              EXPERIENCE
+            </h2>
+            <div className="space-y-6">
+              {experience.map((exp, index) => (
+                <div key={index}>
+                  <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2 mb-3">
+                    <div>
+                      <h3 className="text-lg font-semibold text-resume-text">{exp.role}</h3>
+                      <p className="text-resume-section font-medium">{exp.company}</p>
+                    </div>
+                    <p className="text-resume-section">{exp.duration}</p>
                   </div>
-                  <p className="text-resume-section">{exp.duration}</p>
+                  <ul className="list-disc list-inside space-y-1 text-resume-text text-sm ml-4">
+                    {renderDescription(exp.description)}
+                  </ul>
                 </div>
-                <ul className="list-disc list-inside space-y-1 text-resume-text text-sm ml-4">
-                  {exp.description.split('\n').map((line, i) => (
-                    <li key={i}>{line}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Projects */}
-        <section>
-          <h2 className="text-xl font-bold text-resume-header mb-4 border-b-2 border-resume-accent pb-2">
-            PROJECTS
-          </h2>
-          <div className="space-y-4">
-            {projects.map((project, index) => (
-              <div key={index}>
-                <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2 mb-2">
-                  <h3 className="text-lg font-semibold text-resume-text">{project.title}</h3>
+        {projects.length > 0 && (
+          <section>
+            <h2 className="text-xl font-bold text-resume-header mb-4 border-b-2 border-resume-accent pb-2">
+              PROJECTS
+            </h2>
+            <div className="space-y-4">
+              {projects.map((project, index) => (
+                <div key={index}>
+                  <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2 mb-2">
+                    <h3 className="text-lg font-semibold text-resume-text">{project.title}</h3>
+                    {project.date && (
+                      <p className="text-resume-section">{project.date}</p>
+                    )}
+                  </div>
+                  <ul className="list-disc list-inside space-y-1 text-resume-text text-sm ml-4 mb-2">
+                    {renderDescription(project.description)}
+                  </ul>
+                  {project.technologies && (
+                    <p className="text-resume-section text-sm mb-2">
+                      <strong>Technologies:</strong> {project.technologies}
+                    </p>
+                  )}
+                  <a
+                    href={project.Link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-sm underline hover:text-resume-accent"
+                  >
+                    <Globe className="w-4 h-4" /> View Project
+                  </a>
                 </div>
-                <p className="text-resume-text text-sm mb-2">
-                  {project.description}
-                </p>
-                <a
-                  href={project.Link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-sm underline hover:text-resume-accent"
-                >
-                  <Globe className="w-4 h-4" /> View Project
-                </a>
-              </div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Education */}
-        <section>
-          <h2 className="text-xl font-bold text-resume-header mb-4 border-b-2 border-resume-accent pb-2">
-            EDUCATION
-          </h2>
-          {education.map((edu, index) => (
-            <div key={index} className="flex flex-col md:flex-row md:justify-between md:items-start gap-2">
-              <div>
-                <h3 className="text-lg font-semibold text-resume-text">{edu.degree}</h3>
-                <p className="text-resume-section font-medium">{edu.institution}</p>
+        {education.length > 0 && (
+          <section>
+            <h2 className="text-xl font-bold text-resume-header mb-4 border-b-2 border-resume-accent pb-2">
+              EDUCATION
+            </h2>
+            {education.map((edu, index) => (
+              <div key={index} className="flex flex-col md:flex-row md:justify-between md:items-start gap-2">
+                <div>
+                  <h3 className="text-lg font-semibold text-resume-text">{edu.degree}</h3>
+                  <p className="text-resume-section font-medium">{edu.institution}</p>
+                  {edu.gpa && (
+                    <p className="text-resume-section text-sm">GPA: {edu.gpa}</p>
+                  )}
+                </div>
+                <p className="text-resume-section">{edu.year}</p>
               </div>
-              <p className="text-resume-section">{edu.year}</p>
+            ))}
+          </section>
+        )}
+
+        {/* Certifications */}
+        {certifications && certifications.length > 0 && (
+          <section>
+            <h2 className="text-xl font-bold text-resume-header mb-4 border-b-2 border-resume-accent pb-2">
+              CERTIFICATIONS
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {certifications.map((cert, index) => (
+                <div key={index}>
+                  <h3 className="font-semibold text-resume-text">{cert.name}</h3>
+                  <p className="text-resume-section text-sm">
+                    {cert.issuer} - {cert.date}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
-        </section>
+          </section>
+        )}
 
         {/* Achievements */}
-        <section>
-          <h2 className="text-xl font-bold text-resume-header mb-4 border-b-2 border-resume-accent pb-2">
-            ACHIEVEMENTS
-          </h2>
-          <ul className="list-disc list-inside space-y-1 text-resume-text">
-            {achievements.map((achievement, index) => (
-              <li key={index}>{achievement}</li>
-            ))}
-          </ul>
-        </section>
+        {achievements.length > 0 && (
+          <section>
+            <h2 className="text-xl font-bold text-resume-header mb-4 border-b-2 border-resume-accent pb-2">
+              ACHIEVEMENTS
+            </h2>
+            <ul className="list-disc list-inside space-y-2 text-resume-text text-sm">
+              {achievements.map((achievement, index) => (
+                <li key={index}>{achievement}</li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
     </div>
   );
 };
-
-export default ResumeTemplate;
+export default TailoredResume;

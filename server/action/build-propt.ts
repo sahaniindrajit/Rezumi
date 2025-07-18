@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 
-export function buildPrompt(user: any) {
+export function buildPrompt(user: any,jobDetails:any) {
   const exp = user.experience.map((exp: any) => {
     const description =
       Array.isArray(exp.description)
@@ -16,7 +16,7 @@ export function buildPrompt(user: any) {
     .join("\n");
 
   const edu = user.education
-    .map((e: { degree: any; institution: any; year: any; }) => `- ${e.degree} from ${e.institution} (${e.year})`)
+    .map((e: { degree: any; institution: any; year: any; gpa: any}) => `- ${e.degree} from ${e.institution} (${e.year}) GPA ${e.gpa}`)
     .join("\n");
 
   const achievements = user.achievements.map((a: any) => `- ${a}`).join("\n");
@@ -40,10 +40,10 @@ The resume must:
     "location": ""
   },
   "summary": "",
-  "skills": [],
+  "skills": [...],
   "experience": [
     {
-      "company": "",
+      "company": "", 
       "role": "",
       "duration": "",
       "description": ""
@@ -59,6 +59,7 @@ The resume must:
   "education": [
     {
       "institution": "",
+      "gpa:"",
       "degree": "",
       "year": ""
     }
@@ -81,8 +82,45 @@ Achievements:
 ${achievements}
 Education:
 ${edu}
+Target Company Name:
+${jobDetails.name}
 Target Job Description:
-${user.targetJobDescription}
+${jobDetails.description}
+Target Job Link:
+${jobDetails.link}
+
+👉 CRITICAL INSTRUCTIONS:
+1. Analyze and categorize skills into MAXIMUM 4 concise sections like:
+   - "Programming Languages"
+   - "Frontend Technologies"
+   - "Backend Technologies"
+   - "DevOps & Tools" 
+   - etc.
+   
+2. Use ONLY these category names when they match the skills. Create new concise categories (2-3 words) if needed.
+
+3. For skills section:
+   - Each category MUST have minimum 3 skills
+   - Include ONLY technical skills (soft skills go in summary)
+   - Merge similar technologies (e.g., "ReactJS" → "React")
+
+4. For experience descriptions:
+   - Start with action verbs (Developed, Led, Optimized)
+   - Include metrics where possible (e.g., "improved performance by 40%")
+   - Keep bullets concise (max 2 lines)
+
+5. For projects:
+   - Include: title, 1-sentence description, technologies used, and live link
+
+6. Summary section:
+   - 2-3 sentences highlighting key qualifications
+   - Include years of experience
+   - Mention 1-2 major achievements
+
+7. Omit sections with no data (e.g., certifications if none)
+
+👉 Respond with the completed JSON resume ONLY.
+
 
 👉 Respond with the completed JSON resume only.
 `;

@@ -25,16 +25,16 @@ export async function submitUserDetails({ userDetails, userId }: { userDetails: 
                 );
 
             // Insert skill (assuming only one skill object)
-            // const skillResult = await tx.insert(skill)
-            //     .values({
-            //         technical: userDetails.skill.technical,
-            //         softSkill: userDetails.skill.softSkill,
-            //         description: userDetails.skill.description || "",
-            //         createdAt: new Date(),
-            //         updatedAt: new Date(),
-            //     })
-            //     .returning({ id: skill.id });
-            // const skillIds = skillResult[0]?.id ? [skillResult[0].id] : [];
+            const skillResult = await tx.insert(skill)
+                .values({
+                    technical: userDetails.skill.technical,
+                    softSkill: userDetails.skill.softSkill,
+                    description: userDetails.skill.description || "",
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                })
+                .returning({ id: skill.id });
+            const skillIds = skillResult[0]?.id ? [skillResult[0].id] : [];
 
             // Insert projects
             const projectIds: string[] = [];
@@ -120,19 +120,19 @@ export async function submitUserDetails({ userDetails, userId }: { userDetails: 
                 if (result[0]?.id) additionalIds.push(result[0].id);
             }
 
-            // Insert into userDetails table
-            // await tx.insert(userDetailsTable).values({
-            //     id: userId,
-            //     experince: experienceIds,
-            //     education: educationIds,
-            //     skill: skillIds,
-            //     project: projectIds,
-            //     additional: additionalIds,
-            //     certificate: certificateIds,
-            //     achivement: achievementIds,
-            //     createdAt: new Date(),
-            //     updatedAt: new Date(),
-            // });
+            //Insert into userDetails table
+            await tx.insert(userDetailsTable).values({
+                id: userId,
+                experince: experienceIds,
+                education: educationIds,
+                skill: skillIds,
+                project: projectIds,
+                additional: additionalIds,
+                certificate: certificateIds,
+                achivement: achievementIds,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            });
         });
 
         return { succes: true }

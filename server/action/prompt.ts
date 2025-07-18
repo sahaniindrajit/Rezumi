@@ -7,13 +7,17 @@ const GEMINI_API_KEY = process.env.GOOGLE_GEMINI;
 
 
 
-export default async function answeringModel() {
+export default async function answeringModel(jobDetails:any) {
 
     try {
         console.log("key-->", GEMINI_API_KEY)
 
         //eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const userDataPrompt = buildPrompt(userDetails)
+
+        // get user details from DB using api
+
+        // get job description from frontend
+        const userDataPrompt = buildPrompt(userDetails,jobDetails)
 
         console.log("Prompt--->",userDataPrompt);
         const response = await fetch(
@@ -52,13 +56,13 @@ export default async function answeringModel() {
                 .replace(/\s*```$/, '');
             
             const parsedResume = JSON.parse(cleanJson);
-            return { success: true, answer: parsedResume };
+            return parsedResume;
         }
 
-        return { success: false, answer: null };
+        return null;
     } catch (err) {
         console.log(err)
-        return { success: false, answer: null }
+        return null;
     }
 
 

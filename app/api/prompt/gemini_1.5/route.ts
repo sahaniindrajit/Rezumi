@@ -1,22 +1,28 @@
-import answeringModel from "@/server/action/prompt"
+import answeringModel from "@/server/action/prompt";
 
+export async function POST(req: Request) {
+  try {
+    // read the JSON body
+    const { jobDetails } = await req.json();
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const POST = async (res: Response) => {
+    // jobDetails now has your { companyName, jobDescription, jobLink }
+    const answer = await answeringModel(jobDetails);
 
-    try {
-        const answer = await answeringModel();
-        
-
-        return new Response(JSON.stringify({ answer }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' }
-        });
-
-    } catch (err) {
-        return new Response(JSON.stringify({ error: err }), {
-            status: 400,
-            headers: { 'Content-Type': 'application/json' }
-        });
-    }
+    return new Response(
+      JSON.stringify({ success: true, data: answer }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  } catch (err) {
+    console.error(err);
+    return new Response(
+      JSON.stringify({ success: false, error: (err as any).message }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
 }

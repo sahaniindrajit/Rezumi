@@ -13,6 +13,8 @@ import { UserProfileSection } from "@/components/dashboard/user-profile"
 import { QuickStart } from "@/components/dashboard/quick-start"
 import ResemueHistory from "@/components/dashboard/resume-history"
 import { redirect } from "next/navigation"
+import { CreateResumeModal } from "./modals/createResumeModal"
+import { useState } from "react"
 
 const handleOnClick = () => {
   redirect('/ResumeTemplate');
@@ -20,8 +22,8 @@ const handleOnClick = () => {
 
 function Dashboard() {
   const { data: session, status } = useSession()
-
-
+  const [open, onOpenChange] = useState(false);
+  
   // Loading state
   if (status === "loading") {
     return (
@@ -37,6 +39,7 @@ function Dashboard() {
   // Not signed in state
   if (!session) {
     return (
+      
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="p-8 text-center space-y-4">
@@ -56,22 +59,24 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
+      <CreateResumeModal open={open} onOpenChange={onOpenChange} />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* User Profile Section */}
 
         <UserProfileSection session={session} />
 
         {/* Action Buttons */}
-        <div className="mb-8 flex flex-col sm:flex-row gap-4">
-          <Link href="/create-resume" className="flex-1">
+        <div className="mb-8 flex flex-1 sm:flex-row gap-4">
+          <span className="flex-1">
             <Button
               size="lg"
               className="w-full bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700"
+              onClick={()=>onOpenChange(!open)}
             >
               <Plus className="w-5 h-5 mr-2" />
               Create New Resume
             </Button>
-          </Link>
+          </span>
           <Button onClick={handleOnClick} size="lg" variant="outline" className="sm:w-auto">
             <FileText className="w-5 h-5 mr-2" />
             View Templates
