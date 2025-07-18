@@ -22,6 +22,13 @@
       "when": 1750578705740,
       "tag": "0002_sloppy_angel",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1752420084371,
+      "tag": "0003_warm_titania",
+      "breakpoints": true
     }
   ]
 }

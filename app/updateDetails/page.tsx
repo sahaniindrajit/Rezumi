@@ -9,17 +9,14 @@ import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Plus,
-  Mail,
-  MapPin,
   ChevronLeft,
   ChevronRight,
   Save,
 } from "lucide-react"
-import { Session } from "next-auth"
 import { userProfile } from "@/types/userProfile.type"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { Checkbox } from "@radix-ui/react-checkbox"
-import { submitUserDetails } from "@/server/action/submit-user-detail"
+import { submituserDetailsData } from "@/server/action/submit-user-detail"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { redirect } from 'next/navigation'
@@ -40,33 +37,127 @@ type SectionId = typeof SECTIONS[number]['id']
 
 export default function updateDetails() {
   const { data: session, status } = useSession();
-    if (!session) {
+  if (!session) {
     // Optionally redirect or show a sign-in prompt
-      redirect('/')
-    }
+    redirect('/')
+
+  }
   const router = useRouter()
   const [currentSection, setCurrentSection] = useState<SectionId>('personal')
   const [completedSections, setCompletedSections] = useState<Set<SectionId>>(new Set())
-  
-  const { register, handleSubmit, watch } = useForm<userProfile>()
+
+  const { register, handleSubmit } = useForm<userProfile>()
 
   const currentSectionIndex = SECTIONS.findIndex(section => section.id === currentSection)
   const isFirstSection = currentSectionIndex === 0
   const isLastSection = currentSectionIndex === SECTIONS.length - 1
 
   const onSubmit: SubmitHandler<userProfile> = async (data) => {
-    console.log(data)
+    console.log("Raw form data:", data)
+
+    // Helper function to convert comma-separated string to array
+    const stringToArray = (value: any): string[] => {
+      if (typeof value === 'string') {
+        return value.split(',').map(s => s.trim()).filter(s => s);
+      }
+      return Array.isArray(value) ? value : [];
+    };
+
+    // Helper function to convert form date to proper timestamp
+    const formatDate = (dateValue: any): string => {
+      if (!dateValue) return new Date().toISOString();
+
+      // If it's already a proper date string, return as is
+      if (typeof dateValue === 'string' && dateValue.includes('-')) {
+        // If it's just year-month format (e.g., "2025-08"), convert to full date
+        if (dateValue.match(/^\d{4}-\d{2}$/)) {
+          return new Date(dateValue + '-01').toISOString();
+        }
+        // If it's a full date, convert to ISO string
+        if (dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
+          return new Date(dateValue).toISOString();
+        }
+      }
+
+      return new Date().toISOString();
+    };
+
+    // Transform the form data to match the expected structure
+    const transformedData = {
+      user: {
+        ...data.user,
+        phoneNumber: data.user?.phoneNumber ? parseInt(String(data.user.phoneNumber)) : null,
+      },
+      skill: {
+        technical: stringToArray(data.skill?.technical),
+        softSkill: stringToArray(data.skill?.softSkill),
+        description: data.skill?.description || "",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      project: data.project?.map(proj => ({
+        name: proj.name || "",
+        description: proj.description || "",
+        skills: stringToArray(proj.skills),
+        link: proj.link || "",
+        isCurrent: Boolean(proj.isCurrent),
+        startingDate: formatDate(proj.startingDate),
+        endingDate: proj.endingDate ? formatDate(proj.endingDate) : null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })) || [],
+      certificate: data.certificate?.map(cert => ({
+        name: cert.name || "",
+        description: cert.description || "",
+        link: cert.link || "",
+        skills: stringToArray(cert.skills),
+      })) || [],
+      experience: data.experience?.map(exp => ({
+        jobtitle: exp.jobtitle || "",
+        company: exp.company || "",
+        isCurrent: Boolean(exp.isCurrent),
+        startingDate: formatDate(exp.startingDate),
+        endingDate: exp.endingDate ? formatDate(exp.endingDate) : null,
+        description: exp.description || "",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })) || [],
+      education: data.education?.map(edu => ({
+        degree: edu.degree || "",
+        field: edu.field || "",
+        university: edu.university || "",
+        isCurrent: Boolean(edu.isCurrent),
+        gpa: edu.gpa || "",
+        startingDate: formatDate(edu.startingDate),
+        endingDate: edu.endingDate ? formatDate(edu.endingDate) : null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })) || [],
+      achievement: data.achievement?.map(ach => ({
+        title: ach.title || "",
+        description: ach.description || "",
+        link: ach.link || "",
+      })) || [],
+      additional: data.additional?.map(add => ({
+        title: add.title || "",
+        description: add.description || "",
+        link: add.link || "",
+      })) || [],
+    } as userProfile;
+
+    console.log("Transformed data:", transformedData)
+
     try {
-      const submitDetails = await submitUserDetails({ 
-        userDetails: data, 
-        userId: session.user!.id! 
+      const submitDetails = await submituserDetailsData({
+        userDetailsData: transformedData,
+        userId: session.user!.id!
       })
 
       if (!submitDetails.succes) {
         console.error("Error in submitting user details")
       } else {
         // Redirect back to profile or show success message
-        router.push('/profile')
+        router.push('/dashboard')
       }
     } catch (error) {
       console.error("Submission error:", error)
@@ -108,7 +199,7 @@ export default function updateDetails() {
               </Avatar>
               <h2 className="text-2xl font-bold text-gray-900">{session.user?.name}</h2>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
@@ -142,26 +233,26 @@ export default function updateDetails() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone</Label>
-                <Input 
-                  id="phone" 
+                <Input
+                  id="phone"
                   placeholder="Enter your phone number"
                   {...register("user.phoneNumber")}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="location">Location</Label>
-                <Input 
-                  id="location" 
-                  placeholder="City, State" 
-                  {...register("user.location")} 
+                <Input
+                  id="location"
+                  placeholder="City, State"
+                  {...register("user.location")}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="title">Professional Title</Label>
-                <Input 
-                  id="title" 
-                  placeholder="e.g., Senior Frontend Developer" 
-                  {...register("user.currentPosition")} 
+                <Input
+                  id="title"
+                  placeholder="e.g., Senior Frontend Developer"
+                  {...register("user.currentPosition")}
                 />
               </div>
             </div>
@@ -192,35 +283,35 @@ export default function updateDetails() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="jobTitle">Job Title</Label>
-                  <Input 
-                    id="jobTitle" 
-                    placeholder="e.g., Senior Frontend Developer" 
-                    {...register("experience.0.jobtitle")} 
+                  <Input
+                    id="jobTitle"
+                    placeholder="e.g., Senior Frontend Developer"
+                    {...register("experience.0.jobtitle")}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="company">Company</Label>
-                  <Input 
-                    id="company" 
-                    placeholder="Company name" 
-                    {...register("experience.0.company")} 
+                  <Input
+                    id="company"
+                    placeholder="Company name"
+                    {...register("experience.0.company")}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="startDate">Start Date</Label>
-                  <Input 
-                    id="startDate" 
-                    type="month" 
-                    {...register("experience.0.startingDate")} 
+                  <Input
+                    id="startDate"
+                    type="month"
+                    {...register("experience.0.startingDate")}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="endDate">End Date</Label>
-                  <Input 
-                    id="endDate" 
-                    type="month" 
-                    placeholder="Leave empty if current" 
-                    {...register("experience.0.endingDate")} 
+                  <Input
+                    id="endDate"
+                    type="month"
+                    placeholder="Leave empty if current"
+                    {...register("experience.0.endingDate")}
                   />
                 </div>
               </div>
@@ -252,26 +343,26 @@ export default function updateDetails() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="degree">Degree</Label>
-                  <Input 
-                    id="degree" 
-                    placeholder="e.g., Bachelor of Science" 
-                    {...register("education.0.degree")} 
+                  <Input
+                    id="degree"
+                    placeholder="e.g., Bachelor of Science"
+                    {...register("education.0.degree")}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="field">Field of Study</Label>
-                  <Input 
-                    id="field" 
-                    placeholder="e.g., Computer Science" 
-                    {...register("education.0.field")} 
+                  <Input
+                    id="field"
+                    placeholder="e.g., Computer Science"
+                    {...register("education.0.field")}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="school">School/University</Label>
-                  <Input 
-                    id="school" 
-                    placeholder="Institution name" 
-                    {...register("education.0.university")} 
+                  <Input
+                    id="school"
+                    placeholder="Institution name"
+                    {...register("education.0.university")}
                   />
                 </div>
                 <div className="space-y-2">
@@ -294,10 +385,10 @@ export default function updateDetails() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="gpa">GPA (Optional)</Label>
-                  <Input 
-                    id="gpa" 
-                    placeholder="3.8" 
-                    {...register("education.0.gpa")} 
+                  <Input
+                    id="gpa"
+                    placeholder="3.8"
+                    {...register("education.0.gpa")}
                   />
                 </div>
               </div>
@@ -324,6 +415,15 @@ export default function updateDetails() {
                 placeholder="List your soft skills separated by commas (e.g., Leadership, Communication, Problem Solving)"
                 className="min-h-[80px]"
                 {...register("skill.softSkill")}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="skillDescription">Skills Description</Label>
+              <Textarea
+                id="skillDescription"
+                placeholder="Describe your overall skills and expertise..."
+                className="min-h-[80px]"
+                {...register("skill.description")}
               />
             </div>
           </div>
@@ -547,11 +647,10 @@ export default function updateDetails() {
                     <button
                       key={section.id}
                       onClick={() => goToSection(section.id)}
-                      className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors ${
-                        currentSection === section.id
-                          ? 'bg-gradient-to-r from-emerald-600 to-blue-600 text-white'
-                          : 'hover:bg-gray-100 text-gray-700'
-                      }`}
+                      className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors ${currentSection === section.id
+                        ? 'bg-gradient-to-r from-emerald-600 to-blue-600 text-white'
+                        : 'hover:bg-gray-100 text-gray-700'
+                        }`}
                     >
                       <span className="text-lg">{section.icon}</span>
                       <div>

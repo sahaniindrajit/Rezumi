@@ -1,5 +1,4 @@
 import { pgTable, text, timestamp, unique, foreignKey, integer, boolean } from "drizzle-orm/pg-core"
-import { sql } from "drizzle-orm"
 
 
 
@@ -33,10 +32,10 @@ export const account = pgTable("account", {
 	sessionState: text("session_state"),
 }, (table) => [
 	foreignKey({
-			columns: [table.userId],
-			foreignColumns: [user.id],
-			name: "account_userId_user_id_fk"
-		}).onDelete("cascade"),
+		columns: [table.userId],
+		foreignColumns: [user.id],
+		name: "account_userId_user_id_fk"
+	}).onDelete("cascade"),
 ]);
 
 export const authenticator = pgTable("authenticator", {
@@ -50,10 +49,10 @@ export const authenticator = pgTable("authenticator", {
 	transports: text(),
 }, (table) => [
 	foreignKey({
-			columns: [table.userId],
-			foreignColumns: [user.id],
-			name: "authenticator_userId_user_id_fk"
-		}).onDelete("cascade"),
+		columns: [table.userId],
+		foreignColumns: [user.id],
+		name: "authenticator_userId_user_id_fk"
+	}).onDelete("cascade"),
 	unique("authenticator_credentialID_unique").on(table.credentialId),
 ]);
 
@@ -63,8 +62,8 @@ export const session = pgTable("session", {
 	expires: timestamp({ mode: 'string' }).notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.userId],
-			foreignColumns: [user.id],
-			name: "session_userId_user_id_fk"
-		}).onDelete("cascade"),
+		columns: [table.userId],
+		foreignColumns: [user.id],
+		name: "session_userId_user_id_fk"
+	}).onDelete("cascade"),
 ]);

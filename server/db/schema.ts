@@ -17,8 +17,8 @@ export const userDetails = createTable('userDetails', {
     id: text("id")
         .primaryKey()
         .$defaultFn(() => crypto.randomUUID()),
-    userID:text("userID").references(()=> users.id ),
-    experince: text('experience')
+    userID: text("userID").references(() => users.id),
+    experience: text('experience')
         .array(),
     education: text('education')
         .array(),
@@ -30,7 +30,7 @@ export const userDetails = createTable('userDetails', {
         .array(),
     certificate: text('certificate')
         .array(),
-    achivement: text('achivement')
+    achievement: text('achievement')
         .array(),
     createdAt: timestamp('createdAt').notNull(),
     updatedAt: timestamp('updatedAt').notNull(),
@@ -109,8 +109,8 @@ export const certificate = createTable('certificate', {
         .notNull(),
 })
 
-export const achivement = createTable('achivement', {
-    id: text('text')
+export const achievement = createTable('achievement', {
+    id: text('id')
         .primaryKey()
         .$defaultFn(() => crypto.randomUUID()),
     title: text('title').notNull(),
@@ -119,7 +119,7 @@ export const achivement = createTable('achivement', {
 })
 
 export const additional = createTable('additional', {
-    id: text('text')
+    id: text('id')
         .primaryKey()
         .$defaultFn(() => crypto.randomUUID()),
     title: text('title').notNull(),
@@ -220,7 +220,7 @@ export const authenticators = createTable(
 )
 
 export type EducationType = typeof education.$inferSelect;
-export type achivementType = typeof achivement.$inferSelect;
+export type achivementType = typeof achievement.$inferSelect;
 export type SkillType = typeof skill.$inferSelect;
 export type AdditionType = typeof additional.$inferSelect;
 export type ExperienceType = typeof experience.$inferSelect;
