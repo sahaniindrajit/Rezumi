@@ -55,26 +55,26 @@ export function CreateResumeModal({ open, onOpenChange }: CreateResumeModalProps
 
   const handleCreateResume = async () => {
     setIsLoading(true);
-    
+
 
     try {
       console.log("USER ID-->", session?.user?.id);
       const res = await fetch("/api/prompt/gemini_1.5", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        jobDetails: {
-          companyName: formData.companyName,
-          jobDescription: formData.jobDescription,
-          jobLink: formData.jobLink,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        userId: session!.user!.id, // Assuming you store user ID in sessionStorage
-      }),
-    });
+        body: JSON.stringify({
+          jobDetails: {
+            companyName: formData.companyName,
+            jobDescription: formData.jobDescription,
+            jobLink: formData.jobLink,
+          },
+          userId: session!.user!.id, // Assuming you store user ID in sessionStorage
+        }),
+      });
 
-        const apiResponse = await res.json();
+      const apiResponse = await res.json();
 
       if (apiResponse.success) {
         // Close modal and reset form
@@ -87,7 +87,7 @@ export function CreateResumeModal({ open, onOpenChange }: CreateResumeModalProps
         });
 
         // Navigate to tailored resume page with data
-        router.push("/tailoredResume");
+        router.push("/tailoredresume");
       }
     } catch (error) {
       alert("Failed to create resume. Please try again.");
@@ -105,7 +105,7 @@ export function CreateResumeModal({ open, onOpenChange }: CreateResumeModalProps
             Create New Tailored Resume
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-6 py-4">
           <div className="space-y-2">
             <Label htmlFor="companyName" className="text-sm font-medium">

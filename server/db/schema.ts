@@ -135,7 +135,7 @@ export const users = createTable("user", {
     email: text("email").unique(),
     emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: text("image"),
-    phoneNumber: integer('phoneNumber'),
+    phoneNumber: text('phoneNumber'),
     country: text('country'),
     location: text('location'),
     dob: timestamp('dob'),
