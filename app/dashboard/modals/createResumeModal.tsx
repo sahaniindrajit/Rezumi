@@ -87,7 +87,7 @@ export function CreateResumeModal({ open, onOpenChange }: CreateResumeModalProps
         });
 
         // Navigate to tailored resume page with data
-        router.push("/tailoredresume");
+        router.push("/resume");
       }
     } catch (error) {
       alert("Failed to create resume. Please try again.");

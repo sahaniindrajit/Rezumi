@@ -59,11 +59,11 @@ export function PersonalSection({ register, session }: PersonalSectionProps) {
                         id="email"
                         type="email"
                         placeholder="Enter your email"
-                        disabled
+                        // disabled
                         className="bg-gray-50 h-11"
                         {...register("user.email", { required: true })}
                     />
-                    <p className="text-xs text-gray-500">Email cannot be changed</p>
+                    {/* <p className="text-xs text-gray-500">Email cannot be changed</p> */}
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="phone" className="text-sm font-medium">
