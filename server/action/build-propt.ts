@@ -8,11 +8,11 @@ export function buildPrompt(user: any,jobDetails:any) {
         ? exp.description.map((d: any) => `• ${d}`).join("\n  ")
         : `• ${exp.description}`;
 
-    return `- ${exp.role} at ${exp.company} (${exp.duration})\n  ${description}`;
+    return `- ${exp.jobtitle} at ${exp.company} (${exp.startingDate}-${exp.endingDate})\n  ${description}`;
   }).join("\n");
 
   const proj = user.projects
-    .map((p: { title: any; description: any; link:any }) => `- ${p.title}: ${p.description}: ${p.link}`)
+    .map((p: { name: any; description: any; link:any }) => `- ${p.name}: ${p.description}: ${p.link}`)
     .join("\n");
 
   const edu = user.education

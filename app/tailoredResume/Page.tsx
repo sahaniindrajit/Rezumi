@@ -1,4 +1,5 @@
 "use client";
+
 import { Mail, Phone, MapPin, Globe, Github, Linkedin } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -14,13 +15,13 @@ interface Experience {
   company: string;
   role: string;
   duration: string;
-  description: string | string[]; // Allow both string and array
+  description: string | string[];
 }
 
 interface Project {
   title: string;
   date?: string;
-  description: string | string[]; // Allow both string and array
+  description: string | string[];
   technologies?: string;
   Link: string;
 }
@@ -41,12 +42,12 @@ interface ResumeData {
   name: string;
   contact: ContactInfo;
   summary: string;
-  skills: SkillCategory[]; // Updated to categorized skills
+  skills: SkillCategory[];
   experience: Experience[];
   projects: Project[];
   education: Education[];
   achievements: string[];
-  certifications?: { // Added certifications
+  certifications?: {
     name: string;
     issuer: string;
     date: string;
@@ -71,26 +72,25 @@ const TailoredResume = () => {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p>Loading resume data...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading resume data...</p>
         </div>
       </div>
     );
   }
 
   const rawSkills = (resumeData as any).skills;
-const skillsArray: SkillCategory[] = Array.isArray(rawSkills)
-  ? rawSkills
-  : Object.entries(rawSkills).map(([category, items]) => ({
-      category,
-      items: Array.isArray(items) ? items : [],
-    }));
+  const skillsArray: SkillCategory[] = Array.isArray(rawSkills)
+    ? rawSkills
+    : Object.entries(rawSkills).map(([category, skills]) => ({
+        category,
+        items: Array.isArray(skills) ? skills : [],
+      }));
 
   const {
     name,
     contact,
     summary,
-    skills,
     experience,
     projects,
     education,
@@ -98,10 +98,8 @@ const skillsArray: SkillCategory[] = Array.isArray(rawSkills)
     certifications
   } = resumeData;
 
-  console.log("skills--->",skills);
-
   // Extract role from first experience entry
-  const currentRole = experience.length > 0 ? experience[0].role : "Software Developer";
+  const currentRole = experience[0]?.role || "Professional";
 
   // Helper to render description (handles both string and array)
   const renderDescription = (desc: string | string[]) => {
@@ -112,9 +110,9 @@ const skillsArray: SkillCategory[] = Array.isArray(rawSkills)
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-white shadow-lg print:shadow-none print:max-w-none">
+    <div className="max-w-4xl mx-auto bg-background shadow-lg print:shadow-none print:max-w-none">
       {/* Header */}
-      <div className="bg-resume-header text-black p-8 print:p-6">
+      <div className="bg-resume-header text-resume-header-foreground p-8 print:p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="text-4xl font-bold mb-2">{name}</h1>
@@ -128,7 +126,7 @@ const skillsArray: SkillCategory[] = Array.isArray(rawSkills)
               <Mail className="w-4 h-4" />
               <a
                 href={`mailto:${contact.email}`}
-                className="underline hover:text-resume-accent"
+                className="underline hover:text-resume-accent transition-colors"
               >
                 {contact.email}
               </a>
@@ -137,18 +135,18 @@ const skillsArray: SkillCategory[] = Array.isArray(rawSkills)
               <Phone className="w-4 h-4" />
               <a
                 href={`tel:${contact.phone}`}
-                className="underline hover:text-resume-accent"
+                className="underline hover:text-resume-accent transition-colors"
               >
                 {contact.phone}
               </a>
             </div>
             <div className="flex items-center gap-2 md:justify-end">
               <MapPin className="w-4 h-4" />
-               <a
+              <a
                 href={`https://www.google.com/maps/place/${encodeURIComponent(contact.location)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline hover:text-resume-accent"
+                className="underline hover:text-resume-accent transition-colors"
               >
                 {contact.location}
               </a>
@@ -160,7 +158,7 @@ const skillsArray: SkillCategory[] = Array.isArray(rawSkills)
                   href={contact.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:text-resume-accent"
+                  className="underline hover:text-resume-accent transition-colors"
                 >
                   {contact.github.replace('https://', '')}
                 </a>
@@ -173,7 +171,7 @@ const skillsArray: SkillCategory[] = Array.isArray(rawSkills)
                   href={contact.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:text-resume-accent"
+                  className="underline hover:text-resume-accent transition-colors"
                 >
                   {contact.linkedin.replace('https://', '')}
                 </a>
@@ -185,7 +183,6 @@ const skillsArray: SkillCategory[] = Array.isArray(rawSkills)
 
       <div className="p-8 print:p-6 space-y-8">
         {/* Skills */}
-        
         {skillsArray.length > 0 && (
           <section>
             <h2 className="text-xl font-bold text-resume-header mb-4 border-b-2 border-resume-accent pb-2">
@@ -258,7 +255,7 @@ const skillsArray: SkillCategory[] = Array.isArray(rawSkills)
                     href={project.Link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-sm underline hover:text-resume-accent"
+                    className="flex items-center gap-1 text-sm underline hover:text-resume-accent transition-colors"
                   >
                     <Globe className="w-4 h-4" /> View Project
                   </a>
@@ -325,4 +322,5 @@ const skillsArray: SkillCategory[] = Array.isArray(rawSkills)
     </div>
   );
 };
+
 export default TailoredResume;
