@@ -13,6 +13,9 @@ export const fetchData = async (userId: string) => {
             .where(eq(userDetails.userID, userId));
 
 
+        console.log("details", details)
+
+
 
         let userExperience = null;
         let userSkill = null;
@@ -23,6 +26,8 @@ export const fetchData = async (userId: string) => {
         let userAdditional = null;
 
         const user = details[0]?.user;
+
+        console.log(user)
 
         const userData = details[0]?.userDetails;
 

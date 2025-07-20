@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 
-export function buildPrompt(user: any,jobDetails:any) {
+export function buildPrompt(user: any, jobDetails: any) {
   const exp = user.experience.map((exp: any) => {
     const description =
       Array.isArray(exp.description)
         ? exp.description.map((d: any) => `• ${d}`).join("\n  ")
         : `• ${exp.description}`;
 
-    return `- ${exp.role} at ${exp.company} (${exp.duration})\n  ${description}`;
+    return `- ${exp.jobtitle} at ${exp.company} (${exp.duration})\n  ${description}`;
   }).join("\n");
 
   const proj = user.projects
-    .map((p: { title: any; description: any; link:any }) => `- ${p.title}: ${p.description}: ${p.link}`)
+    .map((p: { title: any; description: any; link: any }) => `- ${p.title}: ${p.description}: ${p.link}`)
     .join("\n");
 
   const edu = user.education
-    .map((e: { degree: any; institution: any; year: any; gpa: any}) => `- ${e.degree} from ${e.institution} (${e.year}) GPA ${e.gpa}`)
+    .map((e: { degree: any; institution: any; year: any; gpa: any }) => `- ${e.degree} from ${e.institution} (${e.year}) GPA ${e.gpa}`)
     .join("\n");
 
   const achievements = user.achievements.map((a: any) => `- ${a}`).join("\n");
