@@ -2,13 +2,14 @@
 
 
 export function buildPrompt(user: any, jobDetails: any) {
+  console.log("user--->",user)
   const exp = user.experience.map((exp: any) => {
     const description =
       Array.isArray(exp.description)
         ? exp.description.map((d: any) => `• ${d}`).join("\n  ")
         : `• ${exp.description}`;
 
-    return `- ${exp.jobtitle} at ${exp.company} (${exp.duration})\n  ${description}`;
+    return `- ${exp.jobtitle} at ${exp.company} from (${exp.startingDate}) to (${exp.endingDate})\n  ${description}`;
   }).join("\n");
 
   const proj = user.projects
@@ -16,10 +17,12 @@ export function buildPrompt(user: any, jobDetails: any) {
     .join("\n");
 
   const edu = user.education
-    .map((e: { degree: any; institution: any; year: any; gpa: any }) => `- ${e.degree} from ${e.institution} (${e.year}) GPA ${e.gpa}`)
+    .map((e: { degree: any; university: any; startingDate: any; endingDate:any ;gpa: any }) => `- ${e.degree} from ${e.university} starting date (${e.startingDate}) ending date (${e.endingDate}) GPA ${e.gpa}`)
     .join("\n");
 
   const achievements = user.achievements.map((a: any) => `- ${a}`).join("\n");
+  const certifications = user.certifications.map((a:{ name: any; description: any; link: any; skills: any }) => `-certificate of ${a.name} description ${a.description} skills learned ${a.skills} certificate link ${a.link} `);
+
 
   return `
 You are an expert resume writer with a deep understanding of ATS (Applicant Tracking Systems), keyword optimization, and resume formatting best practices.
@@ -45,7 +48,7 @@ The resume must:
     {
       "company": "", 
       "role": "",
-      "duration": "",
+      "duration": "from - to",
       "description": ""
     }
   ],
@@ -61,10 +64,17 @@ The resume must:
       "institution": "",
       "gpa:"",
       "degree": "",
-      "year": ""
+      "year": "from - to"
     }
   ],
-  "achievements": []
+  "achievements": [],
+  "certifications":[{
+    "title":"",
+    "description":"",
+    "skills":"",
+    "link":"",
+
+  }],
 }
 ---
 📥 User Input:
@@ -80,6 +90,8 @@ Skills:
 ${user.skills.join(", ")}
 Achievements:
 ${achievements}
+Certifications:
+${certifications}
 Education:
 ${edu}
 Target Company Name:

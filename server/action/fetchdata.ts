@@ -86,6 +86,7 @@ export const fetchData = async (userId: string) => {
             achievements: userAchievement,
             projects: userProject,
             certifications: userCertificate,
+            location:user.location,
 
         };
 

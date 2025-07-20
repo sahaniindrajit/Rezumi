@@ -25,7 +25,7 @@ interface Project {
   title: string;
   date?: string;
   description: string | string[];
-  technologies?: string;
+  technologies?: string[];
   Link: string;
 }
 
@@ -38,7 +38,7 @@ interface Education {
 
 interface SkillCategory {
   category: string;
-  items: string[];
+  skills: string[];
 }
 
 interface ResumeData {
@@ -51,9 +51,10 @@ interface ResumeData {
   education: Education[];
   achievements: string[];
   certifications?: {
-    name: string;
-    issuer: string;
-    date: string;
+    title: string;
+    link: string;
+    description: string;
+    skills: string;
   }[];
 }
 export default function TailoredResume() {
@@ -106,10 +107,13 @@ export default function TailoredResume() {
   const rawSkills = (resumeData as any).skills;
   const skillsArray: SkillCategory[] = Array.isArray(rawSkills)
     ? rawSkills
-    : Object.entries(rawSkills).map(([category, items]) => ({
+    : Object.entries(rawSkills).map(([category, skills]) => ({
       category,
-      items: Array.isArray(items) ? items : [],
-    }));
+      items: Array.isArray(skills) ? skills : [],
+    }
+    ));
+
+  console.log("Skills Array-->", skillsArray)
 
   const {
     name,
@@ -199,7 +203,9 @@ export default function TailoredResume() {
                 {skillsArray.map((skillGroup, index) => (
                   <div key={index}>
                     <h3 className="font-semibold mb-2">{skillGroup.category}</h3>
-                    <p>{skillGroup.items.join(', ')}</p>
+                    <p>{skillGroup.skills.map((skill,index) => (
+                      (index!=skillGroup.skills.length-1)?`${skill}, `:`${skill}`
+                    ))}</p>
                   </div>
                 ))}
               </div>
@@ -245,6 +251,7 @@ export default function TailoredResume() {
                     </ul>
                     {project.technologies && (
                       <p className="text-sm mb-2">
+
                         <strong>Technologies:</strong> {project.technologies}
                       </p>
                     )}
@@ -278,11 +285,25 @@ export default function TailoredResume() {
           {certifications && certifications.length > 0 && (
             <section className="border-b pb-6">
               <h2 className="text-xl font-bold mb-4 uppercase">Certifications</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {certifications.map((cert, index) => (
+              <div className="space-y-4">
+                {certifications.map((certificate, index) => (
                   <div key={index}>
-                    <h3 className="font-semibold">{cert.name}</h3>
-                    <p className="text-sm">{cert.issuer} - {cert.date}</p>
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2 mb-2">
+                      <h3 className="text-lg font-semibold">{certificate.title}</h3>
+                      
+                    </div>
+                    <ul className="list-disc list-inside space-y-1 text-sm ml-4 mb-2">
+                      {renderDescription(certificate.description)}
+                    </ul>
+                    {certificate.skills && (
+                      <p className="text-sm mb-2">
+
+                        <strong>Skills:</strong> {certificate.skills}
+                      </p>
+                    )}
+                    <a href={certificate.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-sm hover:underline">
+                      <Globe className="w-4 h-4" /> View Certificate
+                    </a>
                   </div>
                 ))}
               </div>
