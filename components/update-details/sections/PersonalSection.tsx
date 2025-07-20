@@ -37,7 +37,6 @@ export function PersonalSection({ register, session }: PersonalSectionProps) {
                     <Input
                         id="firstName"
                         placeholder="Enter your first name"
-                        defaultValue={session.user?.name?.split(" ")[0] || ""}
                         {...register("user.name", { required: true })}
                         className="h-11"
                     />
@@ -49,7 +48,6 @@ export function PersonalSection({ register, session }: PersonalSectionProps) {
                     <Input
                         id="lastName"
                         placeholder="Enter your last name"
-                        defaultValue={session.user?.name?.split(" ").slice(1).join(" ") || ""}
                         className="h-11"
                     />
                 </div>
@@ -61,7 +59,6 @@ export function PersonalSection({ register, session }: PersonalSectionProps) {
                         id="email"
                         type="email"
                         placeholder="Enter your email"
-                        defaultValue={session.user?.email || ""}
                         disabled
                         className="bg-gray-50 h-11"
                         {...register("user.email", { required: true })}

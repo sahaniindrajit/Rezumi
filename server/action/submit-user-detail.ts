@@ -210,11 +210,11 @@ export async function submituserDetailsData({ userDetailsData, userId }: { userD
             console.log("10 - User details record created")
         });
 
-        return { succes: true }
+        return { success: true }
     } catch (error) {
 
         console.log("Error at submit user details", error);
-        return { succes: false }
+        return { success: false }
 
     }
 

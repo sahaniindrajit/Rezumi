@@ -1,19 +1,20 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ChevronLeft, ChevronRight, Save, CheckCircle } from "lucide-react"
 import { useForm, type SubmitHandler, useFieldArray } from "react-hook-form"
 import { submituserDetailsData } from "@/server/action/submit-user-detail"
+import { fetchData } from "@/server/action/fetchdata"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { redirect } from "next/navigation"
 import type { userProfile } from "@/types/userProfile.type"
 
 // Import components
-import { SectionNavigation, SECTIONS, type SectionId } from "../../components/update-details/SectionNavigation"
-import { ProgressBar } from "../../components/update-details/ProgressBar"
+import { SectionNavigation, SECTIONS, type SectionId } from "@/components/update-details/SectionNavigation"
+import { ProgressBar } from "@/components/update-details/ProgressBar"
 import {
     PersonalSection,
     ExperienceSection,
@@ -23,10 +24,26 @@ import {
     CertificateSection,
     AchievementSection,
     AdditionalSection,
-} from "../../components/update-details/sections"
+} from "@/components/update-details/sections"
 
 // Import utilities
-import { transformFormData } from "../../utils/formUtils"
+import { transformFormData } from "@/utils/formUtils"
+
+// Helper function to format dates for form inputs
+const formatDateForInput = (dateString: string | null | undefined): string => {
+    if (!dateString) return ""
+    try {
+        const date = new Date(dateString)
+        if (isNaN(date.getTime())) {
+            console.warn("Invalid date string:", dateString)
+            return ""
+        }
+        return date.toISOString().split('T')[0] // Format as YYYY-MM-DD
+    } catch (error) {
+        console.warn("Error formatting date:", dateString, error)
+        return ""
+    }
+}
 
 export default function UpdateDetails() {
     const { data: session, status } = useSession()
@@ -37,8 +54,9 @@ export default function UpdateDetails() {
     const router = useRouter()
     const [currentSection, setCurrentSection] = useState<SectionId>("personal")
     const [completedSections, setCompletedSections] = useState<Set<SectionId>>(new Set())
+    const [isLoading, setIsLoading] = useState(true)
 
-    const { register, handleSubmit, control } = useForm<userProfile>({
+    const { register, handleSubmit, control, setValue, reset } = useForm<userProfile>({
         defaultValues: {
             experience: [{}],
             education: [{}],
@@ -54,6 +72,7 @@ export default function UpdateDetails() {
         fields: experienceFields,
         append: appendExperience,
         remove: removeExperience,
+        replace: replaceExperience,
     } = useFieldArray({
         control,
         name: "experience",
@@ -63,6 +82,7 @@ export default function UpdateDetails() {
         fields: educationFields,
         append: appendEducation,
         remove: removeEducation,
+        replace: replaceEducation,
     } = useFieldArray({
         control,
         name: "education",
@@ -72,6 +92,7 @@ export default function UpdateDetails() {
         fields: projectFields,
         append: appendProject,
         remove: removeProject,
+        replace: replaceProject,
     } = useFieldArray({
         control,
         name: "project",
@@ -81,6 +102,7 @@ export default function UpdateDetails() {
         fields: certificateFields,
         append: appendCertificate,
         remove: removeCertificate,
+        replace: replaceCertificate,
     } = useFieldArray({
         control,
         name: "certificate",
@@ -90,6 +112,7 @@ export default function UpdateDetails() {
         fields: achievementFields,
         append: appendAchievement,
         remove: removeAchievement,
+        replace: replaceAchievement,
     } = useFieldArray({
         control,
         name: "achievement",
@@ -99,10 +122,255 @@ export default function UpdateDetails() {
         fields: additionalFields,
         append: appendAdditional,
         remove: removeAdditional,
+        replace: replaceAdditional,
     } = useFieldArray({
         control,
         name: "additional",
     })
+
+    // Fetch and populate user data
+    useEffect(() => {
+        const loadUserData = async () => {
+            if (session?.user?.id) {
+                try {
+                    console.log("Fetching user data for ID:", session.user.id)
+                    const userData = await fetchData(session.user.id)
+                    console.log("Fetched user data:", userData)
+
+                    if (userData) {
+                        // Set personal information
+                        try {
+                            setValue("user.name", userData.name || "")
+                            setValue("user.email", userData.email || "")
+                            setValue("user.phoneNumber", userData.phone || "")
+                            setValue("user.linkedin", userData.linkedin || "")
+                            setValue("user.portfolio", userData.portfolio || "")
+                            setValue("user.description", userData.summary || "")
+                        } catch (error) {
+                            console.error("Error setting personal information:", error)
+                        }
+
+                        // Set experience data
+                        try {
+                            if (userData.experience && userData.experience.length > 0) {
+                                console.log("Setting experience data:", userData.experience)
+                                const experienceWithFormattedDates = userData.experience.map(exp => ({
+                                    ...exp,
+                                    startingDate: formatDateForInput(exp?.startingDate),
+                                    endingDate: formatDateForInput(exp?.endingDate)
+                                }))
+                                replaceExperience(experienceWithFormattedDates)
+                            } else {
+                                replaceExperience([{
+                                    id: "",
+                                    jobtitle: "",
+                                    company: "",
+                                    isCurrent: false,
+                                    startingDate: "",
+                                    endingDate: "",
+                                    description: "",
+                                    createdAt: new Date(),
+                                    updatedAt: new Date(),
+                                }])
+                            }
+                        } catch (error) {
+                            console.error("Error setting experience data:", error)
+                            replaceExperience([{
+                                id: "",
+                                jobtitle: "",
+                                company: "",
+                                isCurrent: false,
+                                startingDate: "",
+                                endingDate: "",
+                                description: "",
+                                createdAt: new Date(),
+                                updatedAt: new Date(),
+                            }])
+                        }
+
+                        // Set education data
+                        try {
+                            if (userData.education && userData.education.length > 0) {
+                                console.log("Setting education data:", userData.education)
+                                const educationWithFormattedDates = userData.education.map(edu => ({
+                                    ...edu,
+                                    startingDate: formatDateForInput(edu?.startingDate),
+                                    endingDate: formatDateForInput(edu?.endingDate)
+                                }))
+                                replaceEducation(educationWithFormattedDates)
+                            } else {
+                                replaceEducation([{
+                                    id: "",
+                                    degree: "",
+                                    field: "",
+                                    university: "",
+                                    gpa: "",
+                                    isCurrent: false,
+                                    startingDate: "",
+                                    endingDate: "",
+                                    createdAt: new Date(),
+                                    updatedAt: new Date(),
+                                }])
+                            }
+                        } catch (error) {
+                            console.error("Error setting education data:", error)
+                            replaceEducation([{
+                                id: "",
+                                degree: "",
+                                field: "",
+                                university: "",
+                                gpa: "",
+                                isCurrent: false,
+                                startingDate: "",
+                                endingDate: "",
+                                createdAt: new Date(),
+                                updatedAt: new Date(),
+                            }])
+                        }
+
+                        // Set skills data
+                        try {
+                            if (userData.skills && userData.skills.length > 0) {
+                                console.log("Setting skills data:", userData.skills)
+                                const skill = userData.skills[0]
+                                setValue("skill.technical", skill?.technical || [])
+                                setValue("skill.softSkill", skill?.softSkill || [])
+                                setValue("skill.description", skill?.description || "")
+                            } else {
+                                setValue("skill.technical", [])
+                                setValue("skill.softSkill", [])
+                                setValue("skill.description", "")
+                            }
+                        } catch (error) {
+                            console.error("Error setting skills data:", error)
+                            setValue("skill.technical", [])
+                            setValue("skill.softSkill", [])
+                            setValue("skill.description", '')
+                        }
+
+                        // Set project data
+                        try {
+                            if (userData.projects && userData.projects.length > 0) {
+                                console.log("Setting project data:", userData.projects)
+                                // Convert skills arrays to comma-separated strings for each project
+                                const projectsWithStringSkills = userData.projects.map(project => ({
+                                    ...project,
+                                    // skills: Array.isArray(project?.skills) ? project.skills.join(", ") : project?.skills || "",
+                                    startingDate: formatDateForInput(project?.startingDate),
+                                    endingDate: formatDateForInput(project?.endingDate)
+                                }))
+                                replaceProject(projectsWithStringSkills)
+                            } else {
+                                replaceProject([{
+                                    id: "",
+                                    name: "",
+                                    link: "",
+                                    description: "",
+                                    skills: [''],
+                                    startingDate: "",
+                                    endingDate: "",
+                                    createdAt: new Date(),
+                                    updatedAt: new Date(),
+                                    isCurrent: false,
+                                }])
+
+                            }
+                        } catch (error) {
+                            console.error("Error setting project data:", error)
+                            replaceProject([{
+                                id: "",
+                                name: "",
+                                link: "",
+                                description: "",
+                                skills: [''],
+                                startingDate: "",
+                                endingDate: "",
+                                createdAt: new Date(),
+                                updatedAt: new Date(),
+                                isCurrent: false,
+                            }])
+                        }
+
+                        // Set certificate data
+                        try {
+                            if (userData.certifications && userData.certifications.length > 0) {
+                                console.log("Setting certificate data:", userData.certifications)
+                                // Convert skills arrays to comma-separated strings for each certificate
+                                const certificatesWithStringSkills = userData.certifications.map(cert => ({
+                                    ...cert,
+                                    // skills: Array.isArray(cert?.skills) ? cert.skills.join(", ") : cert?.skills || ""
+                                }))
+                                replaceCertificate(certificatesWithStringSkills)
+                            } else {
+                                replaceCertificate([{
+                                    link: "",
+                                    id: "",
+                                    name: "",
+                                    description: "",
+                                    skills: [''],
+
+                                }])
+                            }
+                        } catch (error) {
+                            console.error("Error setting certificate data:", error)
+                            replaceCertificate([{
+                                link: "",
+                                id: "",
+                                name: "",
+                                description: "",
+                                skills: [''],
+                            }])
+                        }
+
+                        // Set achievement data
+                        try {
+                            if (userData.achievements && userData.achievements.length > 0) {
+                                console.log("Setting achievement data:", userData.achievements)
+                                replaceAchievement(userData.achievements)
+                            } else {
+                                replaceAchievement([{
+                                    id: "",
+                                    link: "",
+                                    description: "",
+                                    title: "",
+
+                                }])
+                            }
+                        } catch (error) {
+                            console.error("Error setting achievement data:", error)
+                            replaceAchievement([{
+                                id: "",
+                                link: "",
+                                description: "",
+                                title: "",
+                            }])
+                        }
+
+                        // Mark sections as completed if they have data
+                        const sectionsWithData = new Set<SectionId>()
+                        if (userData.name || userData.email) sectionsWithData.add("personal")
+                        if (userData.experience?.length) sectionsWithData.add("experience")
+                        if (userData.education?.length) sectionsWithData.add("education")
+                        if (userData.skills) sectionsWithData.add("skills")
+                        if (userData.projects?.length) sectionsWithData.add("project")
+                        if (userData.certifications?.length) sectionsWithData.add("certificate")
+                        if (userData.achievements?.length) sectionsWithData.add("achievement")
+
+                        setCompletedSections(sectionsWithData)
+                        console.log("Completed sections:", sectionsWithData)
+                    } else {
+                        console.log("No user data found")
+                    }
+                } catch (error) {
+                    console.error("Error loading user data:", error)
+                } finally {
+                    setIsLoading(false)
+                }
+            }
+        }
+
+        loadUserData()
+    }, [session?.user?.id, setValue, replaceExperience, replaceEducation, replaceProject, replaceCertificate, replaceAchievement])
 
     const currentSectionIndex = SECTIONS.findIndex((section) => section.id === currentSection)
     const isFirstSection = currentSectionIndex === 0
@@ -118,7 +386,7 @@ export default function UpdateDetails() {
                 userId: session.user!.id!,
             })
 
-            if (!submitDetails.succes) {
+            if (!submitDetails.success) {
                 console.error("Error in submitting user details")
             } else {
                 console.log("Submission Successfully --->", submitDetails)
@@ -217,6 +485,17 @@ export default function UpdateDetails() {
             default:
                 return null
         }
+    }
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading your profile data...</p>
+                </div>
+            </div>
+        )
     }
 
     return (
