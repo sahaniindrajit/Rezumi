@@ -57,7 +57,16 @@ export default function UpdateDetails() {
     const [isLoading, setIsLoading] = useState(true)
 
     const { register, handleSubmit, control, setValue, reset } = useForm<userProfile>({
+        shouldUnregister: false, 
         defaultValues: {
+            user: {
+                name: "",
+                email: "",
+                phoneNumber: "",
+                linkedin: "",
+                portfolio: "",
+                description: "",
+            },
             experience: [{}],
             education: [{}],
             project: [{}],
@@ -370,17 +379,18 @@ export default function UpdateDetails() {
         }
 
         loadUserData()
-    }, [session?.user?.id, setValue, replaceExperience, replaceEducation, replaceProject, replaceCertificate, replaceAchievement])
+    }, [])
 
     const currentSectionIndex = SECTIONS.findIndex((section) => section.id === currentSection)
     const isFirstSection = currentSectionIndex === 0
-    const isLastSection = currentSectionIndex === SECTIONS.length - 1
+    const isLastSection = currentSectionIndex == (SECTIONS.length - 1)
 
     const onSubmit: SubmitHandler<userProfile> = async (data) => {
         console.log("Raw form data:", data)
 
         try {
             const transformedData = transformFormData(data)
+            console.log("transformed data --->", transformedData)
             const submitDetails = await submituserDetailsData({
                 userDetailsData: transformedData,
                 userId: session.user!.id!,
@@ -397,10 +407,14 @@ export default function UpdateDetails() {
         }
     }
 
-    const handleNext = () => {
+    const handleNext =async  () => {
         if (!isLastSection) {
-            setCompletedSections((prev) => new Set(prev).add(currentSection))
-            setCurrentSection(SECTIONS[currentSectionIndex + 1].id)
+            setTimeout(() => {
+                 setCurrentSection(SECTIONS[currentSectionIndex + 1].id)
+                 setCompletedSections((prev) => new Set(prev).add(currentSection))
+            }, 1000);
+            
+            
         }
     }
 
@@ -498,6 +512,12 @@ export default function UpdateDetails() {
         )
     }
 
+    // console.log("Current section:", currentSection)
+    // console.log("Current section index:", currentSectionIndex) 
+    // console.log("Total sections:", SECTIONS.length)
+    // console.log("Is last section:", isLastSection)
+
+
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Header */}
@@ -567,6 +587,8 @@ export default function UpdateDetails() {
                                                 <Save className="w-4 h-4" />
                                                 Save Draft
                                             </Button>
+
+                             
 
                                             {!isLastSection ? (
                                                 <Button

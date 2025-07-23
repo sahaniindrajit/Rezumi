@@ -20,7 +20,7 @@ export function buildPrompt(user: any, jobDetails: any) {
     .map((e: { degree: any; university: any; startingDate: any; endingDate:any ;gpa: any }) => `- ${e.degree} from ${e.university} starting date (${e.startingDate}) ending date (${e.endingDate}) GPA ${e.gpa}`)
     .join("\n");
 
-  const achievements = user.achievements.map((a: any) => `- ${a}`).join("\n");
+  const achievements = user.achievements.map((a: {title:any,description:any,link:any}) =>`achievement ${a.title} description ${a.description} link ${a.link}`);
   const certifications = user.certifications.map((a:{ name: any; description: any; link: any; skills: any }) => `-certificate of ${a.name} description ${a.description} skills learned ${a.skills} certificate link ${a.link} `);
 
 

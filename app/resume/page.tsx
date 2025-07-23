@@ -41,6 +41,12 @@ interface SkillCategory {
   skills: string[];
 }
 
+interface Achievement {
+  title: string;
+  description: string;
+  link?: string;
+}
+
 interface ResumeData {
   name: string;
   contact: ContactInfo;
@@ -49,7 +55,7 @@ interface ResumeData {
   experience: Experience[];
   projects: Project[];
   education: Education[];
-  achievements: string[];
+  achievements: Achievement[];
   certifications?: {
     title: string;
     link: string;
@@ -104,14 +110,13 @@ export default function TailoredResume() {
     );
   }
 
-  const rawSkills = (resumeData as any).skills;
-  const skillsArray: SkillCategory[] = Array.isArray(rawSkills)
-    ? rawSkills
-    : Object.entries(rawSkills).map(([category, skills]) => ({
-      category,
-      items: Array.isArray(skills) ? skills : [],
-    }
-    ));
+  const rawSkills: any = resumeData?.skills ?? {};
+
+const skillsObj = (typeof rawSkills === 'object' && rawSkills !== null) ? rawSkills : {};
+ const skillsArray: SkillCategory[] = Object.entries(skillsObj).map(([category, skills]) => ({
+  category,
+  skills: Array.isArray(skills) ? skills : [],
+}));
 
   console.log("Skills Array-->", skillsArray)
 
@@ -170,10 +175,11 @@ export default function TailoredResume() {
                   {contact.phone}
                 </a>
               </div>
-              <div className="flex items-center gap-2 md:justify-end">
+              {/* <div className="flex items-center gap-2 md:justify-end">
                 <MapPin className="w-4 h-4" />
                 <span>{contact.location}</span>
-              </div>
+              </div> */}
+              
               {contact.github && (
                 <div className="flex items-center gap-2 md:justify-end">
                   <Github className="w-4 h-4" />
@@ -196,7 +202,7 @@ export default function TailoredResume() {
 
         <div className="p-8 print:p-6 space-y-6">
           {/* Skills */}
-          {skillsArray.length > 0 && (
+          {skillsArray && skillsArray.length > 0 && (
             <section className="border-b pb-6">
               <h2 className="text-xl font-bold mb-4 uppercase">Skills</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -213,7 +219,7 @@ export default function TailoredResume() {
           )}
 
           {/* Experience */}
-          {experience.length > 0 && (
+          {experience && experience.length > 0 && (
             <section className="border-b pb-6">
               <h2 className="text-xl font-bold mb-4 uppercase">Experience</h2>
               <div className="space-y-6">
@@ -236,7 +242,7 @@ export default function TailoredResume() {
           )}
 
           {/* Projects */}
-          {projects.length > 0 && (
+          {projects && projects.length > 0 && (
             <section className="border-b pb-6">
               <h2 className="text-xl font-bold mb-4 uppercase">Projects</h2>
               <div className="space-y-4">
@@ -265,7 +271,7 @@ export default function TailoredResume() {
           )}
 
           {/* Education */}
-          {education.length > 0 && (
+          {education && education.length > 0 && (
             <section className="border-b pb-6">
               <h2 className="text-xl font-bold mb-4 uppercase">Education</h2>
               {education.map((edu, index) => (
@@ -280,6 +286,31 @@ export default function TailoredResume() {
               ))}
             </section>
           )}
+
+           {/* Achievements */}
+          {achievements && achievements.length > 0 && (
+              <section>
+                <h2 className="text-xl font-bold mb-4 uppercase">Achievements</h2>
+                <div className="space-y-4">
+                  {achievements.map(({ title, description, link }, index) => (
+                    <div key={index} className="mb-2">
+                      <h3 className="font-semibold text-lg">{title}</h3>
+                      <p className="text-sm">{description}</p>
+                      {link && (
+                        <a
+                          href={link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-blue-600 hover:underline"
+                        >
+                          View Achievement
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
           {/* Certifications */}
           {certifications && certifications.length > 0 && (
@@ -310,17 +341,7 @@ export default function TailoredResume() {
             </section>
           )}
 
-          {/* Achievements */}
-          {achievements.length > 0 && (
-            <section>
-              <h2 className="text-xl font-bold mb-4 uppercase">Achievements</h2>
-              <ul className="list-disc list-inside space-y-2 text-sm">
-                {achievements.map((achievement, index) => (
-                  <li key={index}>{achievement}</li>
-                ))}
-              </ul>
-            </section>
-          )}
+         
         </div>
       </div>
     </div>
