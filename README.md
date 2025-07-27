@@ -1,6 +1,6 @@
 # Rezumi - AI-Powered Resume Builder
 
-Rezumi is a modern, AI-powered resume builder that helps users create tailored resumes for specific job applications. Built with Next.js 15, TypeScript, and integrated with Google's Gemini AI, it provides intelligent resume customization based on job descriptions.
+Rezumi is a modern, AI-powered resume builder that helps users create tailored resumes for specific job applications. Built with Next.js 15, TypeScript, and integrated with Google's Gemini AI, it provides intelligent resume customization based on job descriptions. [Link](https://rezumi-sigma.vercel.app/)
 
 ## 🚀 Features
 
