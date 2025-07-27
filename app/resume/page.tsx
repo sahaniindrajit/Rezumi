@@ -106,11 +106,15 @@ export default function TailoredResume() {
   const rawSkills = (resumeData as any).skills;
   const skillsArray: SkillCategory[] = Array.isArray(rawSkills)
     ? rawSkills
-    : Object.entries(rawSkills).map(([category, items]) => ({
+    : Object.entries(rawSkills).map(([category, skills]) => ({
       category,
-      items: Array.isArray(items) ? items : [],
+      items: Array.isArray(skills) ? skills : [],
     }));
 
+
+  console.log('rawSkills', rawSkills);
+
+  console.log("SkillArray", skillsArray)
   const {
     name,
     contact,
