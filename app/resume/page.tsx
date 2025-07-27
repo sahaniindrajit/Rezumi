@@ -110,30 +110,16 @@ export default function TailoredResume() {
     );
   }
 
-<<<<<<< HEAD
-  const rawSkills = (resumeData as any).skills;
-  const skillsArray: SkillCategory[] = Array.isArray(rawSkills)
-    ? rawSkills
-    : Object.entries(rawSkills).map(([category, skills]) => ({
-      category,
-      items: Array.isArray(skills) ? skills : [],
-    }));
-=======
   const rawSkills: any = resumeData?.skills ?? {};
 
-const skillsObj = (typeof rawSkills === 'object' && rawSkills !== null) ? rawSkills : {};
- const skillsArray: SkillCategory[] = Object.entries(skillsObj).map(([category, skills]) => ({
-  category,
-  skills: Array.isArray(skills) ? skills : [],
-}));
+  const skillsObj = (typeof rawSkills === 'object' && rawSkills !== null) ? rawSkills : {};
+  const skillsArray: SkillCategory[] = Object.entries(skillsObj).map(([category, skills]) => ({
+    category,
+    skills: Array.isArray(skills) ? skills : [],
+  }));
 
   console.log("Skills Array-->", skillsArray)
->>>>>>> 3bba38afd7afa8b3c64ec6575bb8dfaf18f7dd8f
 
-
-  console.log('rawSkills', rawSkills);
-
-  console.log("SkillArray", skillsArray)
   const {
     name,
     contact,
@@ -193,7 +179,7 @@ const skillsObj = (typeof rawSkills === 'object' && rawSkills !== null) ? rawSki
                 <MapPin className="w-4 h-4" />
                 <span>{contact.location}</span>
               </div> */}
-              
+
               {contact.github && (
                 <div className="flex items-center gap-2 md:justify-end">
                   <Github className="w-4 h-4" />
@@ -223,8 +209,8 @@ const skillsObj = (typeof rawSkills === 'object' && rawSkills !== null) ? rawSki
                 {skillsArray.map((skillGroup, index) => (
                   <div key={index}>
                     <h3 className="font-semibold mb-2">{skillGroup.category}</h3>
-                    <p>{skillGroup.skills.map((skill,index) => (
-                      (index!=skillGroup.skills.length-1)?`${skill}, `:`${skill}`
+                    <p>{skillGroup.skills.map((skill, index) => (
+                      (index != skillGroup.skills.length - 1) ? `${skill}, ` : `${skill}`
                     ))}</p>
                   </div>
                 ))}
@@ -301,30 +287,30 @@ const skillsObj = (typeof rawSkills === 'object' && rawSkills !== null) ? rawSki
             </section>
           )}
 
-           {/* Achievements */}
+          {/* Achievements */}
           {achievements && achievements.length > 0 && (
-              <section>
-                <h2 className="text-xl font-bold mb-4 uppercase">Achievements</h2>
-                <div className="space-y-4">
-                  {achievements.map(({ title, description, link }, index) => (
-                    <div key={index} className="mb-2">
-                      <h3 className="font-semibold text-lg">{title}</h3>
-                      <p className="text-sm">{description}</p>
-                      {link && (
-                        <a
-                          href={link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm text-blue-600 hover:underline"
-                        >
-                          View Achievement
-                        </a>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
+            <section>
+              <h2 className="text-xl font-bold mb-4 uppercase">Achievements</h2>
+              <div className="space-y-4">
+                {achievements.map(({ title, description, link }, index) => (
+                  <div key={index} className="mb-2">
+                    <h3 className="font-semibold text-lg">{title}</h3>
+                    <p className="text-sm">{description}</p>
+                    {link && (
+                      <a
+                        href={link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:underline"
+                      >
+                        View Achievement
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* Certifications */}
           {certifications && certifications.length > 0 && (
@@ -335,7 +321,7 @@ const skillsObj = (typeof rawSkills === 'object' && rawSkills !== null) ? rawSki
                   <div key={index}>
                     <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2 mb-2">
                       <h3 className="text-lg font-semibold">{certificate.title}</h3>
-                      
+
                     </div>
                     <ul className="list-disc list-inside space-y-1 text-sm ml-4 mb-2">
                       {renderDescription(certificate.description)}
@@ -355,7 +341,7 @@ const skillsObj = (typeof rawSkills === 'object' && rawSkills !== null) ? rawSki
             </section>
           )}
 
-         
+
         </div>
       </div>
     </div>
