@@ -49,7 +49,7 @@ export const ResumePreview = ({ resumeData }: { resumeData: ResumeData }) => {
       <main className="space-y-4">
         {/* EDUCATION */}
         <section>
-          <h2 className="text-xs font-bold uppercase text-blue-600 mb-1">Education</h2>
+          <h2 className="text-xl font-bold uppercase text-black mb-1">Education</h2>
           {education.map((edu, index) => (
             <div key={index} className="text-sm">
               <div className="flex justify-between items-start">
@@ -66,7 +66,7 @@ export const ResumePreview = ({ resumeData }: { resumeData: ResumeData }) => {
 
         {/* TECHNICAL SKILLS */}
         <section>
-          <h2 className="text-xs font-bold uppercase text-blue-600 mb-1">Technical Skills</h2>
+          <h2 className="text-xl font-bold uppercase text-black mb-1">Technical Skills</h2>
           <div className="text-sm space-y-0.5">
             {skillsArray.map((skillGroup, index) => (
               <div key={index} className="flex">
@@ -79,7 +79,7 @@ export const ResumePreview = ({ resumeData }: { resumeData: ResumeData }) => {
 
         {/* WORK EXPERIENCE */}
         <section>
-          <h2 className="text-xs font-bold uppercase text-blue-600 mb-1">Work Experience</h2>
+          <h2 className="text-xl font-bold uppercase text-black mb-1">Work Experience</h2>
           {experience.map((exp, index) => (
             <div key={index} className="mb-3">
               <div className="flex justify-between items-baseline text-sm">
@@ -99,7 +99,7 @@ export const ResumePreview = ({ resumeData }: { resumeData: ResumeData }) => {
 
         {/* PROJECTS */}
         <section>
-          <h2 className="text-xs font-bold uppercase text-blue-600 mb-1">Projects</h2>
+          <h2 className="text-xl font-bold uppercase text-black mb-1">Projects</h2>
           {projects.map((project, index) => (
             <div key={index} className="mb-3">
                <div className="flex justify-between items-baseline text-sm">
@@ -123,7 +123,7 @@ export const ResumePreview = ({ resumeData }: { resumeData: ResumeData }) => {
 
         {/* ACHIEVEMENTS */}
         <section>
-          <h2 className="text-xs font-bold uppercase text-blue-600 mb-1">Achievements</h2>
+          <h2 className="text-xl font-bold uppercase text-black mb-1">Achievements</h2>
           <ul className="list-disc list-outside ml-5 space-y-0.5">
             {achievements.map(({ title, description, link }, index) => (
               <li key={index} className="text-sm">
