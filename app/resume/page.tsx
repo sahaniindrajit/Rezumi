@@ -5,7 +5,7 @@
 import { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
 import type { ResumeData } from '@/types/resume.type';
-import { ResumePreview } from './preview/page';
+import { ResumePreview } from '@/components/resume/preview';
 
 export default function TailoredResume() {
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);

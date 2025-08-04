@@ -1,9 +1,6 @@
-// src/components/ResumePreview.tsx
-import type { ResumeData, SkillCategory } from '@/types/resume.type';
-import { Mail, Phone, Globe, Github, Linkedin } from "lucide-react";
 
-// This component is redesigned to precisely match the target single-page layout.
-export const ResumePreview = ({ resumeData }: { resumeData: ResumeData }) => {
+import type { ResumeData, SkillCategory } from '@/types/resume.type';
+export function ResumePreview  ({ resumeData }: { resumeData: ResumeData }) {
   const {
     name, contact, summary, skills, experience, projects, education, achievements, certifications
   } = resumeData;

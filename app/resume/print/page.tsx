@@ -3,10 +3,10 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import type { ResumeData, SkillCategory } from '@/types/resume.type';
+import { ResumePreview } from '@/components/resume/preview';
 
 
-import { ResumePreview } from '../preview/page';
-import { ResumeData } from '@/types/resume.type';
 
 const ResumePrintPageContent = () => {
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);
