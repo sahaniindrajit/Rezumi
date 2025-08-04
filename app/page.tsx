@@ -6,12 +6,25 @@ import { Card, CardContent } from "@/components/ui/card"
 import { ArrowRight, CheckCircle, FileText, Palette, Zap, Users, Star, Menu, X, Play } from "lucide-react"
 import Link from "next/link"
 import { signInWithGoogle } from "@/server/action/signIn"
+import { useSession } from "next-auth/react"
+import { redirect } from "next/dist/server/api-utils"
+import { useRouter } from "next/navigation"
 
 export default function RezumiLanding() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+   const { data: session, status } = useSession();
+  const router = useRouter(); 
 
   useEffect(() => {
+    
+    if (status === 'authenticated') {
+      router.replace('/dashboard'); 
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50)
     }
@@ -117,12 +130,12 @@ export default function RezumiLanding() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/dashboard">
-                <Button size="lg" className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-4 text-lg group">
+              
+                <Button size="lg" className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-4 text-lg group" onClick={signInWithGoogle}>
                   Create Your Resume
                   <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
                 </Button>
-              </Link>
+             
               <Button
                 size="lg"
                 variant="outline"

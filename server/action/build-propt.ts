@@ -56,7 +56,7 @@ The resume must:
     {
       "title": "",
       "description": "",
-      "Link":""
+      "link":""
     }
   ],
   "education": [
@@ -67,7 +67,13 @@ The resume must:
       "year": "from - to"
     }
   ],
-  "achievements": [],
+  "achievements": [
+    {
+      "title": "",
+      "description": "",
+      "link":""
+    }
+  ],
   "certifications":[{
     "title":"",
     "description":"",
