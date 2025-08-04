@@ -1,9 +1,10 @@
 // src/app/api/resume/download/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+
 import type { ResumeData } from '@/types/resume.type';
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) {  
   try {
     const resumeData: ResumeData = await request.json();
 
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     // 5. Generate the PDF
     const pdf = await page.pdf({
-      format: 'A4',
+      format: 'a4',
       printBackground: true, // Important to include your CSS background colors
       margin: {
         top: '1px',
