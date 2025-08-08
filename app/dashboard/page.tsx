@@ -62,7 +62,7 @@ export default function Dashboard() {
     }
 
     const handleViewTemplates = () => {
-        router.push("/resumetemplate");
+        router.push("/ResumeTemplate");
     }
 
     const handleUpdateDetails = () => {
