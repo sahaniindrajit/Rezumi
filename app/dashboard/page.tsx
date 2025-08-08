@@ -66,7 +66,7 @@ export default function Dashboard() {
     }
 
     const handleUpdateDetails = () => {
-        router.push('/updatedetails')
+        router.push('/updateDetails')
     }
 
     return (
