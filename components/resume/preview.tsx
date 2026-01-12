@@ -7,10 +7,8 @@ export function ResumePreview  ({ resumeData }: { resumeData: ResumeData }) {
 
   console.log('Resume Data:', resumeData);
 
-  const skillsArray: SkillCategory[] = Object.entries(skills ?? {}).map(([category, skills]) => ({
-    category,
-    skills: Array.isArray(skills) ? skills : [],
-  }));
+  // Normalise skills; the source is already an array of { category, skills }
+  const skillsArray: SkillCategory[] = Array.isArray(skills) ? skills : [];
 
   const renderDescription = (desc: string | string[]) => {
     const lines = Array.isArray(desc) ? desc : desc.split('\n').filter(line => line.trim() !== '');
