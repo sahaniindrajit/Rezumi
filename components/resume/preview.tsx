@@ -7,8 +7,36 @@ export function ResumePreview  ({ resumeData }: { resumeData: ResumeData }) {
 
   console.log('Resume Data:', resumeData);
 
-  // Normalise skills; the source is already an array of { category, skills }
-  const skillsArray: SkillCategory[] = Array.isArray(skills) ? skills : [];
+  // Normalise skills; handle both array of objects and array of strings
+  const skillsArray: SkillCategory[] = Array.isArray(skills) 
+    ? skills.map((skill: any) => {
+        // If skill is already an object with category and skills
+        if (typeof skill === 'object' && skill !== null && 'category' in skill) {
+          return {
+            category: skill.category || '',
+            skills: Array.isArray(skill.skills) ? skill.skills : []
+          };
+        }
+        // If skill is a string in format "Category: skill1, skill2, ..."
+        if (typeof skill === 'string') {
+          const colonIndex = skill.indexOf(':');
+          if (colonIndex > 0) {
+            const category = skill.substring(0, colonIndex).trim();
+            const skillsList = skill.substring(colonIndex + 1).trim().split(',').map((s: string) => s.trim()).filter((s: string) => s);
+            return {
+              category,
+              skills: skillsList
+            };
+          }
+          // If no colon, treat entire string as category with no skills
+          return {
+            category: skill,
+            skills: []
+          };
+        }
+        return { category: '', skills: [] };
+      })
+    : [];
 
   const renderDescription = (desc: string | string[]) => {
     const lines = Array.isArray(desc) ? desc : desc.split('\n').filter(line => line.trim() !== '');
@@ -66,7 +94,7 @@ export function ResumePreview  ({ resumeData }: { resumeData: ResumeData }) {
             {skillsArray.map((skillGroup, index) => (
               <div key={index} className="flex">
                 <strong className="w-40 font-bold text-black">{skillGroup.category}</strong>
-                <span className="flex-1">{skillGroup.skills.join(', ')}</span>
+                <span className="flex-1">{Array.isArray(skillGroup.skills) ? skillGroup.skills.join(', ') : ''}</span>
               </div>
             ))}
           </div>
