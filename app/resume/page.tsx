@@ -17,34 +17,36 @@ export default function TailoredResume() {
     if (data) setResumeData(JSON.parse(data));
   }, []);
 
-  const handleDownload = async () => {
-    if (!resumeData) return;
-    setIsDownloading(true);
-    try {
-      const response = await fetch('/api/resume/download', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(resumeData),
-      });
+  // const handleDownload = async () => {
+  //   if (!resumeData) return;
+  //   setIsDownloading(true);
+  //   try {
+  //     const response = await fetch('/api/resume/download', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify(resumeData),
+  //     });
 
-      if (!response.ok) throw new Error(`PDF generation failed: ${await response.text()}`);
+  //     if (!response.ok) throw new Error(`PDF generation failed: ${await response.text()}`);
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `${resumeData.name.replace(' ', '_')}_Resume.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error(error);
-      alert('Sorry, there was an error generating the PDF.');
-    } finally {
-      setIsDownloading(false);
-    }
-  };
+  //     const blob = await response.blob();
+  //     const url = window.URL.createObjectURL(blob);
+  //     const link = document.createElement('a');
+  //     link.href = url;
+  //     link.setAttribute('download', `${resumeData.name.replace(' ', '_')}_Resume.pdf`);
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     link.remove();
+  //     window.URL.revokeObjectURL(url);
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert('Sorry, there was an error generating the PDF.');
+  //   } finally {
+  //     setIsDownloading(false);
+  //   }
+  // };
+
+  const handleDownload= async () => {}
 
   if (!resumeData) {
     return <div>Loading...</div>;
